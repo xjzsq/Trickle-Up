@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 //import { View, Text } from 'react-native';
-import { View,Drawer, Container, Header, Title, Content, Footer, FooterTab, Button, Left, Right, Body, Icon, Text, Card, CardItem, } from 'native-base';
+import { Image } from 'react-native';
+import { View,Drawer, Container, DeckSwiper, Header, Title, Content, Footer, FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Text, Card, CardItem, } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 
@@ -10,36 +11,87 @@ const ProfileScreen = () => (
   </View>
 );
 
-const HomeScreen = ({navigation}) => (
-  <Container>
-    <Header
-     style={{ backgroundColor: "#00bfff" }}
-     androidStatusBarColor="#00bfff"
-     iosBarStyle="light-content"
-     >
-      <Left>
-        <Button transparent onPress={() => navigation.openDrawer()}>
-          <Icon name='menu' />
-        </Button>
-      </Left>
-      <Body>
-        <Title>Header</Title>
-      </Body>
-      <Right />
-    </Header>
-    <Content>
-      <Card>
-        <CardItem>
+const cards = [
+  {
+    text: 'Card One',
+    name: 'One',
+    image: require('./1.jpg'),
+  },
+  {
+    text: 'Card 2',
+    name: '2',
+    image: require('./1.jpg'),
+  },
+  {
+    text: 'Card 3',
+    name: '3',
+    image: require('./1.jpg'),
+  },
+];
+function HomeScreen ({navigation}){
+    return (
+      <Container>
+        <Header
+         style={{ backgroundColor: "#00bfff" }}
+         androidStatusBarColor="#00bfff"
+         iosBarStyle="light-content"
+         >
+          <Left>
+            <Button transparent onPress={() => navigation.openDrawer()}>
+              <Icon name='menu' />
+            </Button>
+          </Left>
           <Body>
-            <Text>
-               咕咕咕
-            </Text>
+            <Title>我是标题</Title>
           </Body>
-        </CardItem>
-      </Card>
-    </Content>
-  </Container>
-);
+          <Right>
+             <Icon name="heart" style={{ color: '#ED4A6A' }} />
+             <Text style={{color: "white",fontSize: 20}}>(幸福指数)</Text>
+          </Right>
+        </Header>
+        <Content>
+          <View>
+            <Text>fee?</Text>
+            <DeckSwiper
+                dataSource={cards}
+                renderItem={item =>
+                  <Card style={{ elevation: 3 }}>
+                    <CardItem>
+                      <Left>
+                        <Thumbnail source={item.image} />
+                        <Body>
+                          <Text>{item.text}</Text>
+                          <Text note>NativeBase</Text>
+                        </Body>
+                      </Left>
+                    </CardItem>
+
+                    <CardItem cardBody>
+                      <Image style={{ height: 300, flex: 1 }} source={item.image} />
+                    </CardItem>
+                    <CardItem>
+                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                      <Text>{item.name}</Text>
+                    </CardItem>
+                  </Card>
+                }
+              />
+          </View>
+          <View>
+            <Card>
+              <CardItem>
+                <Body>
+                  <Text>
+                     咕咕咕 
+                  </Text>
+                </Body>
+              </CardItem>
+            </Card>
+          </View>
+        </Content>
+      </Container>
+    );
+}
 
 const DrawerNav = createDrawerNavigator();
 
