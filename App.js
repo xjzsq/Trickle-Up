@@ -70,7 +70,54 @@ function AboutScreen ({navigation}) {
     );
 }
 
-function HomeScreen ({navigation}){
+class HomeScreen extends Component {
+  state={
+    HappyThings:{
+      '4.3':{
+        '今晚吃鸡':{
+          type : 'game',
+          val : 2,
+        },
+        '下午没课':{
+          type : 'school',
+          val : 2,
+        },
+      },
+      '4.4':{
+        '不用上课':{
+          type : 'school',
+          val : 3,
+        },
+        '祭祀祖先':{
+          type : 'home',
+          val : 3,
+        },
+      },
+    },
+    Type:{
+      'game' : {
+        name : '游戏',
+        DefaultText : '游戏胜利',
+        DefaultVal : 2,
+      },
+      'home' : {
+        name : '家庭',
+        DefaultText : '家庭活动',
+        DefaultVal : 3,
+      },
+      'school' : {
+        name : '学校',
+        DefaultText : '自由规划学习时间',
+        DefaultVal : 2,
+      },
+    },
+  }
+  getTypeName(happyType){
+    alert(this.state.Type.happyType.name);
+    return this.state.Type.happyType.name;
+  }
+  render(){
+    const {navigation} = this.props;
     return (
       <Container>
         <Header
@@ -84,7 +131,7 @@ function HomeScreen ({navigation}){
             </Button>
           </Left>
           <Body>
-            <Title>我是标题</Title>
+            <Title>{this.state.Type.home.name}</Title>
           </Body>
           <Right>
              <Icon name="heart" style={{ color: '#ED4A6A' }} />
@@ -129,6 +176,7 @@ function HomeScreen ({navigation}){
         </View>
       </Container>
     );
+  }
 }
 
 const DrawerNav = createDrawerNavigator();
