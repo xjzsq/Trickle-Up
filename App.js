@@ -1,20 +1,14 @@
 import React, { Component } from 'react';
-//import { View, Text } from 'react-native';
 import { Image } from 'react-native';
 import { View,Drawer, Container, DeckSwiper, Header, Title, Content, Footer, FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Text, Card, CardItem, } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-
-const ProfileScreen = () => (
-  <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-    <Text>Profile Screen</Text>
-  </View>
-);
+import { AsyncStorage } from '@react-native-community/async-storage';
 
 const cards = [
   {
     text: 'Card One',
-    name: 'One',
+    name: '1',
     image: require('./1.jpg'),
   },
   {
@@ -28,6 +22,54 @@ const cards = [
     image: require('./1.jpg'),
   },
 ];
+
+function AboutScreen ({navigation}) {
+  return(
+    <Container>
+      <Header
+       style={{ backgroundColor: "#00bfff" }}
+       androidStatusBarColor="#00bfff"
+       iosBarStyle="light-content"
+       >
+        <Left>
+          <Button transparent onPress={() => navigation.openDrawer()}>
+            <Icon name='menu' />
+          </Button>
+        </Left>
+        <Body>
+          <Title>关于</Title>
+        </Body>
+        <Right/>
+      </Header>
+        <View>
+          <DeckSwiper
+              dataSource={cards}
+              renderItem={item =>
+                <Card style={{ elevation: 3 }}>
+                  <CardItem>
+                    <Left>
+                      <Thumbnail source={item.image} />
+                      <Body>
+                        <Text>{item.text}</Text>
+                        <Text note>NativeBase</Text>
+                      </Body>
+                    </Left>
+                  </CardItem>
+                  <CardItem cardBody>
+                    <Image style={{ height: 300, flex: 1 }} source={item.image} />
+                  </CardItem>
+                  <CardItem>
+                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                    <Text>{item.name}</Text>
+                  </CardItem>
+                </Card>
+              }
+            />
+        </View>
+    </Container>
+    );
+}
+
 function HomeScreen ({navigation}){
     return (
       <Container>
@@ -49,46 +91,42 @@ function HomeScreen ({navigation}){
              <Text style={{color: "white",fontSize: 20}}>(幸福指数)</Text>
           </Right>
         </Header>
-        <Content>
-          <View>
-            <Text>fee?</Text>
-            <DeckSwiper
-                dataSource={cards}
-                renderItem={item =>
-                  <Card style={{ elevation: 3 }}>
-                    <CardItem>
-                      <Left>
-                        <Thumbnail source={item.image} />
-                        <Body>
-                          <Text>{item.text}</Text>
-                          <Text note>NativeBase</Text>
-                        </Body>
-                      </Left>
-                    </CardItem>
-
-                    <CardItem cardBody>
-                      <Image style={{ height: 300, flex: 1 }} source={item.image} />
-                    </CardItem>
-                    <CardItem>
-                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                      <Text>{item.name}</Text>
-                    </CardItem>
-                  </Card>
-                }
-              />
-          </View>
-          <View>
-            <Card>
+        <View>
+          <DeckSwiper
+          dataSource={cards}
+          renderItem={item =>
+            <Card style={{ elevation: 3 }}>
               <CardItem>
-                <Body>
-                  <Text>
-                     咕咕咕 
-                  </Text>
-                </Body>
+                <Left>
+                  <Thumbnail source={item.image} />
+                  <Body>
+                    <Text>{item.text}</Text>
+                    <Text note>NativeBase</Text>
+                  </Body>
+                </Left>
+              </CardItem>
+              <CardItem cardBody>
+                <Image style={{ height: 300, flex: 1 }} source={item.image} />
+              </CardItem>
+              <CardItem>
+                <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                <Text>{item.name}</Text>
               </CardItem>
             </Card>
-          </View>
-        </Content>
+          }
+          />
+          {/*
+          <Card>
+            <CardItem>
+              <Body>
+                <Text>
+                   咕咕咕 
+                </Text>
+              </Body>
+            </CardItem>
+          </Card>
+          */}
+        </View>
       </Container>
     );
 }
@@ -121,7 +159,7 @@ export default function App(){
       }}
       >
         <DrawerNav.Screen name="主页" component={HomeScreen} />
-        <DrawerNav.Screen name="关于" component={ProfileScreen} />
+        <DrawerNav.Screen name="关于" component={AboutScreen} />
       </DrawerNav.Navigator>
     </NavigationContainer>
   );
