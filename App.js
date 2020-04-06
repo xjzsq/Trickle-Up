@@ -117,6 +117,96 @@ export class HomeScreen extends Component {
           },
         ],
       ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
+      [
+        '4.4',
+        [
+          {
+            name : '不用上课', 
+            type : 'school',
+            val : 3,
+          },
+          {
+            name : '祭祀祖先',
+            type : 'home',
+            val : 3,
+          },
+        ],
+      ],
     ],
     Type:{
       'game' : {
@@ -144,17 +234,27 @@ export class HomeScreen extends Component {
     return (
       <View>
         <Card style={{ elevation: 2 }}>
-          <CardItem style={styles.itemContainer}>
+          <CardItem style={styles.itemDate}>
             <Left>
               <Body>
-                <Text>{item[0]}</Text>
+                <Text>Date:{item[0]}</Text>
               </Body>
             </Left>
           </CardItem>
-          <CardItem style={styles.itemContainer}>
-            <Icon name="heart" style={{ color: '#ED4A6A' }} />
-            <Text>{item[1][0].name}</Text>
-          </CardItem>
+            {item[1].map((items)=>(
+              <CardItem style={styles.itemContainer}>
+                <Left>
+                  <Body>
+                    <Text>{items.name}</Text>
+                  </Body>
+                </Left>
+                <Body>
+                  <Text>{this.state.Type[items.type].name}</Text>
+                </Body>
+                  <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                  <Text>{items.val}</Text>
+              </CardItem>
+            ))}
         </Card>
       </View>
     );
@@ -174,7 +274,7 @@ export class HomeScreen extends Component {
             </Button>
           </Left>
           <Body>
-            <Title>{this.state.Type.home.name}</Title>
+            <Title>主页</Title>
           </Body>
           <Right>
              <Icon name="heart" style={{ color: '#ED4A6A' }} />
@@ -182,10 +282,6 @@ export class HomeScreen extends Component {
           </Right>
         </Header>
         <View>
-          <Text style={styles.counter}
-          >
-            {this.state.index}
-          </Text>
           <Carousel
             ref={(c) => this.carousel = c}
             data={this.state.HappyThings}
@@ -197,7 +293,7 @@ export class HomeScreen extends Component {
             onSnapToItem={(index) => this.setState({ index })}
             scrollInterpolator={scrollInterpolator}
             slideInterpolatedStyle={animatedStyles}
-            useScrollView={true}          
+            useScrollView={true}
           />
         </View>
       </Container>
@@ -210,14 +306,16 @@ const styles = StyleSheet.create({
   },
   itemContainer: {
     //width: ITEM_WIDTH,
-    height: ITEM_HEIGHT,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'white'
   },
-  itemLabel: {
-    color: 'white',
-    fontSize: 24
+  itemContainer: {
+    //width: ITEM_WIDTH,
+    //height: ITEM_HEIGHT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white'
   },  
   counter: {
     marginTop: 25,
