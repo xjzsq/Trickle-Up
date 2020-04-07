@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, 
    FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem,
     } from 'native-base';
@@ -8,7 +8,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { AsyncStorage } from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
-
+import FlipCard from 'react-native-flip-card'//卡片翻转效果
 /* about screen */
 const cards = [
   {
@@ -77,8 +77,10 @@ function AboutScreen ({navigation}) {
 
 /* 主屏幕卡片 */
 const SLIDER_WIDTH = Dimensions.get('window').width;
+const SLIDER_HEIGHT = Dimensions.get('window').height;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
+const Content_HEIGHT = Math.round(SLIDER_HEIGHT * 0.8);
 const DATA = [];
 for (let i = 0; i < 10; i++) {
   DATA.push(i)
@@ -86,9 +88,11 @@ for (let i = 0; i < 10; i++) {
 export class HomeScreen extends Component {
   state={
     index : 0 ,
+    totalHappy: 46,  
     HappyThings:[
       [
         '4.3',
+        4,
         [
           {
             name : '今晚吃鸡', 
@@ -104,6 +108,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -119,6 +124,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -134,6 +140,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -149,6 +156,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -164,6 +172,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -179,6 +188,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -194,6 +204,7 @@ export class HomeScreen extends Component {
       ],
       [
         '4.4',
+        6,
         [
           {
             name : '不用上课', 
@@ -233,29 +244,76 @@ export class HomeScreen extends Component {
   _renderItem({ item }) {
     return (
       <View>
-        <Card style={{ elevation: 2 }}>
-          <CardItem style={styles.itemDate}>
-            <Left>
-              <Body>
-                <Text>Date:{item[0]}</Text>
-              </Body>
-            </Left>
-          </CardItem>
-            {item[1].map((items)=>(
-              <CardItem style={styles.itemContainer}>
-                <Left>
-                  <Body>
-                    <Text>{items.name}</Text>
-                  </Body>
-                </Left>
-                <Body>
-                  <Text>{this.state.Type[items.type].name}</Text>
-                </Body>
-                  <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                  <Text>{items.val}</Text>
-              </CardItem>
-            ))}
-        </Card>
+        <ScrollView>
+          <FlipCard 
+            style={styles.card}
+            friction={6}
+            perspective={1000}
+            flipHorizontal={true}
+            flipVertical={false}
+            flip={false}
+            clickable={true}
+            onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
+          >
+            {/* Face Side */}
+            <View style={styles.face}>
+              <Card style={{height: Content_HEIGHT}}>
+                <CardItem style={styles.itemDate}>
+                  <Left>
+                    <Body>
+                      <Text>Date:{item[0]}</Text>
+                    </Body>
+                  </Left>
+                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                    <Text>{item[1]}</Text>
+                </CardItem>
+                {item[2].map((items)=>(
+                  <CardItem style={styles.itemContainer}>
+                    <Left>
+                      <Body>
+                        <Text>{items.name}</Text>
+                      </Body>
+                    </Left>
+                    <Body>
+                      <Text>{this.state.Type[items.type].name}</Text>
+                    </Body>
+                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                      <Text>{items.val}</Text>
+                  </CardItem>
+                ))}
+              </Card>
+            </View>
+            {/* Back Side */}
+            <View style={styles.back}>
+              <Card style={{height: Content_HEIGHT}}>
+                <CardItem style={styles.itemDate}>
+                  <Left>
+                    <Body>
+                      <Text>Date:{item[0]}</Text>
+                    </Body>
+                  </Left>
+                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                    <Text>{item[1]}</Text>
+                </CardItem>
+                {item[2].map((items)=>(
+                  <CardItem style={styles.itemContainer}>
+                    <Left>
+                      <Body>
+                        <Text>{items.name}</Text>
+                      </Body>
+                    </Left>
+                    <Body>
+                      <Text>{this.state.Type[items.type].name}</Text>
+                    </Body>
+                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                      <Text>{items.val}</Text>
+                  </CardItem>
+                ))}
+              </Card>
+            </View>
+          </FlipCard>
+        </ScrollView>
+        
       </View>
     );
   }
@@ -278,7 +336,7 @@ export class HomeScreen extends Component {
           </Body>
           <Right>
              <Icon name="heart" style={{ color: '#ED4A6A' }} />
-             <Text style={{color: "white",fontSize: 20}}>(幸福指数)</Text>
+             <Text style={{color: "white",fontSize: 20}}>{this.state.totalHappy}</Text>
           </Right>
         </Header>
         <View>
@@ -322,7 +380,29 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center'
-  }
+  },
+  card:{
+    // flex: 1,
+    // backgroundColor: 'red',
+    // height : 200,
+    // width : 100,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  face:{
+    // backgroundColor: 'red',
+    // height: 100,
+    // width : 100,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  back:{
+    // backgroundColor: 'green',
+    // height: 100,
+    // width : 100,
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
 });
 
 /* 导航插件 */

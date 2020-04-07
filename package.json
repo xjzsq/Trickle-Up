@@ -16,6 +16,7 @@
     "native-base": "^2.13.12",
     "react": "16.11.0",
     "react-native": "0.62.0",
+    "react-native-flip-card": "^3.5.5",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-reanimated": "^1.7.1",
     "react-native-safe-area-context": "^0.7.3",
