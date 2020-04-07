@@ -80,7 +80,7 @@ const SLIDER_WIDTH = Dimensions.get('window').width;
 const SLIDER_HEIGHT = Dimensions.get('window').height;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
-const Content_HEIGHT = Math.round(SLIDER_HEIGHT * 0.8);
+const Content_HEIGHT = Math.round(SLIDER_HEIGHT * 0.66);
 const DATA = [];
 for (let i = 0; i < 10; i++) {
   DATA.push(i)
@@ -239,9 +239,10 @@ export class HomeScreen extends Component {
   }
   constructor(props) {
     super(props);
-    this._renderItem = this._renderItem.bind(this)
+    this._renderItem = this._renderItem.bind(this);
+    this.setState({nowBack: -1,});
   }
-  _renderItem({ item }) {
+  _renderItem({ item, index }) {
     return (
       <View>
         <ScrollView>
@@ -251,14 +252,14 @@ export class HomeScreen extends Component {
             perspective={1000}
             flipHorizontal={true}
             flipVertical={false}
-            flip={false}
-            clickable={true}
+            flip={index == this.state.nowBack}
+            clickable={false}
             onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
           >
             {/* Face Side */}
             <View style={styles.face}>
-              <Card style={{height: Content_HEIGHT}}>
-                <CardItem style={styles.itemDate}>
+              <Card>
+                <CardItem header>
                   <Left>
                     <Body>
                       <Text>Date:{item[0]}</Text>
@@ -267,53 +268,51 @@ export class HomeScreen extends Component {
                     <Icon name="heart" style={{ color: '#ED4A6A' }} />
                     <Text>{item[1]}</Text>
                 </CardItem>
-                {item[2].map((items)=>(
-                  <CardItem style={styles.itemContainer}>
-                    <Left>
+                <View style={styles.itemContain}>
+                  {item[2].map((items)=>(
+                    <CardItem CardBody style={styles.itemContainer}>
+                      <Left>
+                        <Body>
+                          <Text>{items.name}</Text>
+                        </Body>
+                      </Left>
                       <Body>
-                        <Text>{items.name}</Text>
+                        <Text>{this.state.Type[items.type].name}</Text>
                       </Body>
-                    </Left>
-                    <Body>
-                      <Text>{this.state.Type[items.type].name}</Text>
-                    </Body>
-                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                      <Text>{items.val}</Text>
-                  </CardItem>
-                ))}
+                        <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                        <Text>{items.val}</Text>
+                    </CardItem>
+                  ))}
+                </View>
+                <CardItem footer style={styles.itemButtom}>
+                  <Button primary onPress={() => {this.setState({nowBack:index})}}>
+                    <Icon name='settings' />
+                  </Button>
+                </CardItem>
               </Card>
             </View>
             {/* Back Side */}
-            <View style={styles.back}>
-              <Card style={{height: Content_HEIGHT}}>
-                <CardItem style={styles.itemDate}>
-                  <Left>
-                    <Body>
-                      <Text>Date:{item[0]}</Text>
-                    </Body>
-                  </Left>
-                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                    <Text>{item[1]}</Text>
+            <View>
+              <Card>
+                <CardItem header>
+                  <Text>gugugu</Text>
                 </CardItem>
-                {item[2].map((items)=>(
-                  <CardItem style={styles.itemContainer}>
-                    <Left>
-                      <Body>
-                        <Text>{items.name}</Text>
-                      </Body>
-                    </Left>
-                    <Body>
-                      <Text>{this.state.Type[items.type].name}</Text>
-                    </Body>
-                      <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                      <Text>{items.val}</Text>
+                <View style={styles.itemContain}>
+                  <CardItem>
+                    <Text>
+                    gugugu
+                    </Text>
                   </CardItem>
-                ))}
+                </View>
+                <CardItem footer style={styles.itemButtom}>
+                  <Button success onPress={() => {this.setState({nowBack:-1})}}>
+                    <Icon name='checkmark' />
+                  </Button>
+                </CardItem>
               </Card>
             </View>
           </FlipCard>
         </ScrollView>
-        
       </View>
     );
   }
@@ -366,42 +365,25 @@ const styles = StyleSheet.create({
     //width: ITEM_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: 'white'
   },
-  itemContainer: {
-    //width: ITEM_WIDTH,
-    //height: ITEM_HEIGHT,
-    alignItems: 'center',
+  itemDate:{
+    alignItems:'flex-start',
+    flex: 1,
+  },
+  itemContain:{
+    height: Content_HEIGHT,
+    alignItems: 'flex-end',
+  },
+  itemButtom:{
+    alignItems: 'flex-end',
     justifyContent: 'center',
-    backgroundColor: 'white'
-  },  
+    height: 50,
+  },
   counter: {
     marginTop: 25,
     fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center'
-  },
-  card:{
-    // flex: 1,
-    // backgroundColor: 'red',
-    // height : 200,
-    // width : 100,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  face:{
-    // backgroundColor: 'red',
-    // height: 100,
-    // width : 100,
-    // alignItems: 'center',
-    // justifyContent: 'center',
-  },
-  back:{
-    // backgroundColor: 'green',
-    // height: 100,
-    // width : 100,
-    // alignItems: 'center',
-    // justifyContent: 'center',
   },
 });
 
