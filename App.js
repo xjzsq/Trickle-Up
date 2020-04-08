@@ -92,6 +92,7 @@ export class HomeScreen extends Component {
       totalHappy: 46,
       modalVisible: false,
       setVisible: -1,
+      newVisible: -1,
       useDefaultPlan: false,
       nowBack: -1,
       fabActive: false,
@@ -363,7 +364,7 @@ export class HomeScreen extends Component {
             <View>
               <Card>
                 <CardItem header>
-                  <Text>这些幸福，你捕捉到了吗？</Text>
+                  <Text>这些幸福，你捕捉到了吗？还没的话，就快去实现吧~</Text>
                 </CardItem>
                 <View style={{height:Content_HEIGHT}}>
                   {item[2].map((items)=>{
@@ -394,11 +395,113 @@ export class HomeScreen extends Component {
                         </Button>
                       </Right>
                       <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.setVisible === items.name}
+                        onRequestClose={() => {
+                          this.setState({ setVisible: -1 })
+                        }}
+                      >
+                        <View>
+                          <Header style={{ backgroundColor: '#00bfff' }}
+                            androidStatusBarColor="#00bfff"
+                          >
+                            <Left>
+                              <Button transparent onPress={() => {
+                                this.setState({ setVisible: -1 })
+                              }}
+                              >
+                                <Icon name='arrow-back' />
+                              </Button>
+                            </Left>
+                            <Body>
+                              <Title>{items.name}</Title>
+                            </Body>
+                            <Right>
+                              {/*
+                              <Button transparent>
+                                <Text>Cancel</Text>
+                              </Button>
+                              */}
+                            </Right>
+                          </Header>
+                          <View style={styles.newDateModal}>
+                            <Text style={{fontSize:20,color: 'gray'}}>
+                              这件事是否让你感到更加幸福了呢？
+                            </Text>
+                            <Form>
+                              <Item floatingLabel>
+                                <Label>事件名称</Label>
+                                <Input 
+                                  value={this.state._name}
+                                  onChangeText={(text) => {this.setState({_name:text})}}
+                                />
+                              </Item>
+                            </Form>
+                            <ListItem>
+                              <CheckBox checked={this.state._done} onPress={
+                                ()=>this.setState({_done:!this.state._done})
+                              }/>
+                              <Body>
+                                <Text>我已经通过这个获得幸福啦~</Text>
+                              </Body>
+                            </ListItem>
+                            <View>
+                              <Button success onPress={()=>{
+                                let i = 0,fix=0;
+                                while(i < this.state.HappyThings[index][2].length){
+                                  if(this.state.HappyThings[index][2][i].name===items.name){
+                                    fix=i;
+                                  } else if(this.state._name===this.state.HappyThings[index][2][i].name){
+                                    alert("名称重复，你在这一天已经记录过一次这个幸福了...");
+                                  }
+                                  i++;
+                                }
+                                items.name=this.state._name;
+                                items.type=this.state._type;
+                                items.val=this.state._val;
+                                if(items.done!==this.state._done){
+                                  items.done=this.state._done;
+                                  let totHappy = 0;
+                                  for(let i = 0; i < item[2].length;i++){
+                                    if(item[2][i].done)totHappy+=item[2][i].val;
+                                  }
+                                  item[1]=totHappy;
+                                }
+                                //存储数据
+                                this.setState({setVisible:-1});
+                              }}>
+                                <Icon name='checkmark'/>
+                              </Button>
+                            </View>
+                          </View>
+                        </View>
+                      </Modal>
+                    </CardItem>
+                    );})}
+                  <CardItem style={styles.checkList}>
+                    <CheckBox checked={false} />
+                    <Left style={{paddingLeft: 20}}>
+                      <Text>我又发现了幸福！</Text>
+                    </Left>
+                    <Right>
+                      <Button large info style={{height:20,borderColor:'transparent'}}
+                      bordered onPress={()=>{
+                        this.setState({_name:''}),
+                        this.setState({_type:'home'}),
+                        this.setState({_val:0}),
+                        this.setState({_done:false}),
+                        this.setState({newVisible:index})
+                      }}>
+                        <Icon name="arrow-forward" />
+                      </Button>
+                    </Right>
+                    <Modal
                       animationType="slide"
                       transparent={true}
-                      visible={this.state.setVisible === items.name}
+                      visible={this.state.newVisible === index}
                       onRequestClose={() => {
-                        this.setState({ setVisible: -1 })
+                        this.setState({ newVisible: -1 })
                       }}
                     >
                       <View>
@@ -407,26 +510,21 @@ export class HomeScreen extends Component {
                         >
                           <Left>
                             <Button transparent onPress={() => {
-                              this.setState({ setVisible: -1 })
+                              this.setState({ newVisible: -1 })
                             }}
                             >
                               <Icon name='arrow-back' />
                             </Button>
                           </Left>
                           <Body>
-                            <Title>{items.name}</Title>
+                            <Title>发现幸福</Title>
                           </Body>
                           <Right>
-                            {/*
-                            <Button transparent>
-                              <Text>Cancel</Text>
-                            </Button>
-                            */}
                           </Right>
                         </Header>
                         <View style={styles.newDateModal}>
                           <Text style={{fontSize:20,color: 'gray'}}>
-                            这件事是否让你感到更加幸福了呢？
+                            又发现了幸福的事情吗？记下来！
                           </Text>
                           <Form>
                             <Item floatingLabel>
@@ -447,28 +545,29 @@ export class HomeScreen extends Component {
                           </ListItem>
                           <View>
                             <Button success onPress={()=>{
-                              let i = 0,fix=0;
+                              let i = 0;
                               while(i < this.state.HappyThings[index][2].length){
-                                if(this.state.HappyThings[index][2][i].name===items.name){
-                                  fix=i;
-                                } else if(this.state._name===this.state.HappyThings[index][2][i].name){
+                                if(this.state._name===this.state.HappyThings[index][2][i].name){
                                   alert("名称重复，你在这一天已经记录过一次这个幸福了...");
+                                  return;
                                 }
                                 i++;
                               }
-                              items.name=this.state._name;
-                              items.type=this.state._type;
-                              items.val=this.state._val;
-                              if(items.done!==this.state._done){
-                                items.done=this.state._done;
-                                let totHappy = 0;
-                                for(let i = 0; i < item[2].length;i++){
-                                  if(item[2][i].done)totHappy+=item[2][i].val;
-                                }
-                                item[1]=totHappy;
+                              item[2].push(
+                              {
+                                name:this.state._name,
+                                type:this.state._type,
+                                val:this.state._val,
+                                done:this.state._done,
+                              });
+                              let totHappy = 0;
+                              for(let i = 0; i < item[2].length;i++){
+                                if(item[2][i].done)totHappy+=item[2][i].val;
                               }
+                              item[1]=totHappy;
                               //存储数据
-                              this.setState({setVisible:-1});
+                              this.setState({HappyThings:this.state.HappyThings});
+                              this.setState({newVisible:-1});
                             }}>
                               <Icon name='checkmark'/>
                             </Button>
@@ -476,8 +575,7 @@ export class HomeScreen extends Component {
                         </View>
                       </View>
                     </Modal>
-                    </CardItem>
-                    );})}
+                  </CardItem>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
                   <Button success onPress={() => {this.setState({nowBack:-1})}}>
