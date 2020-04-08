@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, 
-   FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem,
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, ListItem,
+   FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem, Fab, DatePicker, CheckBox,
     } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
@@ -9,22 +9,23 @@ import { AsyncStorage } from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card'//卡片翻转效果
+import RNShakeEvent from 'react-native-shake-event';
 /* about screen */
 const cards = [
   {
     text: 'Card One',
     name: '1',
-    image: require('./1.jpg'),
+    image: require('./o1.jpg'),
   },
   {
     text: 'Card 2',
     name: '2',
-    image: require('./1.jpg'),
+    image: require('./o1.jpg'),
   },
   {
     text: 'Card 3',
     name: '3',
-    image: require('./1.jpg'),
+    image: require('./o1.jpg'),
   },
 ];
 
@@ -80,167 +81,221 @@ const SLIDER_WIDTH = Dimensions.get('window').width;
 const SLIDER_HEIGHT = Dimensions.get('window').height;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
-const Content_HEIGHT = Math.round(SLIDER_HEIGHT * 0.66);
-const DATA = [];
-for (let i = 0; i < 10; i++) {
-  DATA.push(i)
-}
+const Content_HEIGHT = SLIDER_HEIGHT - 180;
 export class HomeScreen extends Component {
-  state={
-    index : 0 ,
-    totalHappy: 46,  
-    HappyThings:[
-      [
-        '4.3',
-        4,
-        [
-          {
-            name : '今晚吃鸡', 
-            type : 'game',
-            val : 2,
-          },
-          {
-            name : '下午没课',
-            type : 'school',
-            val : 2,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-      [
-        '4.4',
-        6,
-        [
-          {
-            name : '不用上课', 
-            type : 'school',
-            val : 3,
-          },
-          {
-            name : '祭祀祖先',
-            type : 'home',
-            val : 3,
-          },
-        ],
-      ],
-    ],
-    Type:{
-      'game' : {
-        name : '游戏',
-        DefaultText : '游戏胜利',
-        DefaultVal : 2,
-      },
-      'home' : {
-        name : '家庭',
-        DefaultText : '家庭活动',
-        DefaultVal : 3,
-      },
-      'school' : {
-        name : '学校',
-        DefaultText : '自由规划学习时间',
-        DefaultVal : 2,
-      },
-    },
-  }
   constructor(props) {
     super(props);
     this._renderItem = this._renderItem.bind(this);
-    this.setState({nowBack: -1,});
+    this.setDate = this.setDate.bind(this);
+    this.state={
+      index : 0,
+      totalHappy: 46,
+      modalVisible: false,
+      useDefaultPlan: false,
+      nowBack: -1,
+      fabActive: false,
+      chosenDate: new Date(),
+      HappyThings:[
+        [
+          new Date(2020,3,10),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,9),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,8),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,7),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,6),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,5),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,4),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,3),
+          4,
+          [
+            {
+              name : '今晚吃鸡', 
+              type : 'game',
+              val : 2,
+              done : true,
+            },
+            {
+              name : '下午没课',
+              type : 'school',
+              val : 2,
+              done : true,
+            },
+          ],
+        ],
+      ],
+      Type:{
+        'game' : {
+          name : '游戏',
+          DefaultText : '游戏胜利',
+          DefaultVal : 2,
+        },
+        'home' : {
+          name : '家庭',
+          DefaultText : '家庭活动',
+          DefaultVal : 3,
+        },
+        'school' : {
+          name : '学校',
+          DefaultText : '自由规划学习时间',
+          DefaultVal : 2,
+        },
+      },
+      defaultList:[
+        {
+          name : '今晚吃鸡', 
+          type : 'game',
+          val : 2,
+          done : false,
+        },
+        {
+          name : '和家人一起做了有意义的事', 
+          type : 'home',
+          val : 3,
+          done : false,
+        },
+        {
+          name : '又是可以自由规划的一天呢~', 
+          type : 'school',
+          val : 2,
+          done : false,
+        },
+      ]
+    }
+  }
+  setDate(newDate) {
+    this.setState({ chosenDate: newDate });
+  }
+  getDateCNFormat(newDate) {
+    return (
+      <Text>
+        {newDate.getFullYear()}年{newDate.getMonth()+1}月{newDate.getDate()}日
+      </Text>
+    );
+  }
+  getDateENFormat(newDate) {
+    return (
+      <Text>
+        {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
+      </Text>
+    );
   }
   _renderItem({ item, index }) {
     return (
@@ -261,12 +316,13 @@ export class HomeScreen extends Component {
               <Card>
                 <CardItem header>
                   <Left>
-                    <Body>
-                      <Text>Date:{item[0]}</Text>
-                    </Body>
+                    <Button info iconLeft onPress={() => {}}>
+                        <Icon name='calendar'/>
+                        {this.getDateENFormat(item[0])}
+                    </Button>
                   </Left>
-                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                    <Text>{item[1]}</Text>
+                  <Icon name="heart" style={{ color: '#ED4A6A' }} />
+                  <Text>{item[1]}</Text>
                 </CardItem>
                 <View style={styles.itemContain}>
                   {item[2].map((items)=>(
@@ -316,6 +372,11 @@ export class HomeScreen extends Component {
       </View>
     );
   }
+  dateEqual(date1,date2){
+    return date1.getDate()===date2.getDate() 
+    && date1.getMonth() === date2.getMonth()
+    && date1.getFullYear() === date2.getFullYear();
+  }
   render(){
     const {navigation} = this.props;
     return (
@@ -338,7 +399,16 @@ export class HomeScreen extends Component {
              <Text style={{color: "white",fontSize: 20}}>{this.state.totalHappy}</Text>
           </Right>
         </Header>
+
+          <Button onPress={()=>this.carousel.snapToNext()}>
+            <Text>{this.state.index}</Text>
+          </Button>
         <View>
+          {/*}
+          <Text style={styles.counter}>
+            {this.getDateENFormat(this.state.HappyThings[this.state.index][0])}
+          </Text>
+        */}
           <Carousel
             ref={(c) => this.carousel = c}
             data={this.state.HappyThings}
@@ -353,11 +423,130 @@ export class HomeScreen extends Component {
             useScrollView={true}
           />
         </View>
+        
+        <Fab
+            active={this.state.fabActive}
+            direction="up"
+            containerStyle={{ }}
+            style={{ backgroundColor: '#00bfff' }}
+            position="bottomRight"
+            onPress={() => this.setState({ fabActive: !this.state.fabActive })}>
+            <Icon name="list" />
+            <Button onPress={() => {this.setState({modalVisible:true})}} style={{ backgroundColor: '#ED4A6A' }}>
+              <Icon name="add" />
+            </Button>
+            <Button disabled style={{ backgroundColor: '#3B5998' }}>
+              <Icon name="share" />
+            </Button>
+          </Fab>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          onRequestClose={() => {
+            this.setState({ modalVisible: !this.state.modalVisible })
+          }}
+        >
+          <View>
+            <Header style={{ backgroundColor: '#00bfff' }}
+              androidStatusBarColor="#00bfff"
+            >
+              <Left>
+                <Button transparent onPress={() => {
+                  this.setState({ modalVisible: !this.state.modalVisible })
+                }}
+                >
+                  <Icon name='arrow-back' />
+                </Button>
+              </Left>
+              <Body>
+                <Title>新建卡片</Title>
+              </Body>
+              <Right>
+                {/*
+                <Button transparent>
+                  <Text>Cancel</Text>
+                </Button>
+                */}
+              </Right>
+            </Header>
+            <View style={styles.newDateModal}>
+              <Text style={{fontSize:20,color: 'gray'}}>
+                记录新的一天让你感到幸福的事情吧~
+              </Text>
+              <ListItem>
+                <Text>日期:</Text>
+                <DatePicker
+                defaultDate={new Date()}
+                minimumDate={new Date(2020, 0, 23)}
+                maximumDate={new Date(2020, 11, 31)}
+                timeZoneOffsetInMinutes={undefined}
+                modalTransparent={false}
+                animationType={"fade"}
+                androidMode={"default"}
+                placeHolderText=""
+                textStyle={{ color: "black" }}
+                placeHolderTextStyle={{ color: "black" }}
+                onDateChange={this.setDate}
+                disabled={false}
+                />
+              </ListItem>
+              <ListItem>
+                <CheckBox checked={this.state.useDefaultPlan} onPress={
+                  ()=>this.setState({useDefaultPlan:!this.state.useDefaultPlan})
+                }/>
+                <Body>
+                  <Text>使用默认列表初始化</Text>
+                </Body>
+              </ListItem>
+              <View>
+                <Button success onPress={()=>{
+                  let i = 0;
+                  while(i < this.state.HappyThings.length){
+                    if(this.dateEqual(this.state.chosenDate,this.state.HappyThings[i][0])){
+                      alert('这一天已经有记录幸福的卡片了呢~');
+                      return;
+                    } else if(this.state.chosenDate>this.state.HappyThings[i][0]){
+                      break;
+                    }
+                    i++;
+                  }
+                  let list = this.state.HappyThings;
+                  if(true === this.state.useDefaultPlan){
+                    list.splice(i,0,[
+                      this.state.chosenDate,
+                      0,
+                      this.state.defaultList,
+                    ]);
+                    this.setState({HappyThings :list});
+                    //this.setState({HappyThings:})
+                  } else {
+                    list.splice(i,0,[
+                      this.state.chosenDate,
+                      0,
+                      [],
+                    ]);
+                    this.setState({HappyThings :list});
+                  }
+                  //存储数据
+                  this.setState({modalVisible:false});
+                }}>
+                  <Icon name='checkmark'/>
+                </Button>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </Container>
     );
   }
 }
 const styles = StyleSheet.create({
+  newDateModal:{
+    padding: 20,
+    backgroundColor: 'white',
+    height: SLIDER_HEIGHT-20,
+  },
   carouselContainer: {
     marginTop: 10
   },
@@ -392,13 +581,16 @@ const styles = StyleSheet.create({
 const DrawerNav = createDrawerNavigator();
 
 export default function App(){
+  RNShakeEvent.addEventListener('shake', () => {
+      console.log('Device shake!');
+    });
   return (
     <NavigationContainer>
       <DrawerNav.Navigator initialRouteName="主页" 
       drawerStyle={{width: 240}} 
       drawerContentOptions={{
         contentContainerStyle: {//外层
-          marginTop: 20,
+          marginTop: 20,//20
           //marginVertical: 100,
         },
         itemStyle:{//内层文字
@@ -410,9 +602,6 @@ export default function App(){
         labelStyle:{//文字遮罩（触摸变色部分）
           marginHorizontal: 0,
           padding: 6,
-        },
-        style:{
-          //marginVertical: 100
         },
       }}
       >
