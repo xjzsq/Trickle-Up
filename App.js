@@ -93,7 +93,7 @@ export class HomeScreen extends Component {
       modalVisible: false,
       setVisible: -1,
       useDefaultPlan: false,
-      nowBack: 1-1,
+      nowBack: -1,
       fabActive: false,
       _name : '',
       _type : '',
