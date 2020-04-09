@@ -1,65 +1,90 @@
 import React, { Component } from 'react';
 import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage, DatePickerAndroid } from 'react-native';
-import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, ListItem, List, Form, Label, Item,
-   FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem, Fab, DatePicker, CheckBox, Input, Picker,
-    } from 'native-base';
+import {
+    Container,
+    Text,
+    View,
+    DeckSwiper,
+    Header,
+    Title,
+    Content,
+    Footer,
+    ListItem,
+    List,
+    Form,
+    Label,
+    Item,
+    FooterTab,
+    Thumbnail,
+    Button,
+    Left,
+    Right,
+    Body,
+    Icon,
+    Card,
+    CardItem,
+    Fab,
+    DatePicker,
+    CheckBox,
+    Input,
+    Picker,
+} from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 //import { AsyncStorage } from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
-import FlipCard from 'react-native-flip-card'//卡片翻转效果
+import FlipCard from 'react-native-flip-card' //卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
 import {captureRef} from "react-native-view-shot";
 import Share from 'react-native-share';
 
-const setStorage = async (key,value) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-    return true;
-  } catch (error) {
-    // Error saving data
-    return false;
-  }
+const setStorage = async (key, value) => {
+    try {
+        await AsyncStorage.setItem(key, value);
+        return true;
+    } catch (error) {
+        // Error saving data
+        return false;
+    }
 }
 
 const getStorage = async (key) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value;
+    try {
+        const value = await AsyncStorage.getItem(key);
+        if (value !== null) {
+            return value;
+        }
+    } catch (error) {
+        // Error retrieving data
+        return null;
     }
-   } catch (error) {
-     // Error retrieving data
-     return null;
-   }
-   return null;
+    return null;
 }
 
 /* about screen */
-const cards = [
-  {
-    text: 'Card One',
-    name: '1',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 2',
-    name: '2',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 3',
-    name: '3',
-    image: require('./o1.jpg'),
-  },
+const cards = [{
+        text: 'Card One',
+        name: '1',
+        image: require('./o1.jpg'),
+    },
+    {
+        text: 'Card 2',
+        name: '2',
+        image: require('./o1.jpg'),
+    },
+    {
+        text: 'Card 3',
+        name: '3',
+        image: require('./o1.jpg'),
+    },
 ];
 
-function AboutScreen ({navigation}) {
-  return(
-    <Container>
+function AboutScreen({ navigation }) {
+    return (
+        <Container>
       <Header
        style={{ backgroundColor: "#00bfff" }}
        androidStatusBarColor="#00bfff"
@@ -230,128 +255,238 @@ export class HomeScreen extends Component {
               type : 'school',
               val : 3,
               done : true,
+=======
+    constructor(props) {
+        super(props);
+        this._renderItem = this._renderItem.bind(this);
+        this.setDate = this.setDate.bind(this);
+        this.state = {
+            index: 0,
+            modalVisible: false,
+            setVisible: -1,
+            newVisible: -1,
+            useDefaultPlan: false,
+            nowBack: -1,
+            fabActive: false,
+            _name: '',
+            _type: '',
+            _val: 0,
+            _done: false,
+            _default: false,
+            chosenDate: new Date(),
+            HappyThings: [
+                [
+                    new Date(2020, 3, 10),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 9),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 8),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 7),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 6),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 5),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 4),
+                    6,
+                    [{
+                            name: '不用上课',
+                            type: 'school',
+                            val: 3,
+                            done: true,
+                        },
+                        {
+                            name: '祭祀祖先',
+                            type: 'home',
+                            val: 3,
+                            done: true,
+                        },
+                    ],
+                ],
+                [
+                    new Date(2020, 3, 3),
+                    4,
+                    [{
+                            name: '今晚吃鸡',
+                            type: 'game',
+                            val: 2,
+                            done: true,
+                        },
+                        {
+                            name: '下午没课',
+                            type: 'school',
+                            val: 2,
+                            done: true,
+                        },
+                    ],
+                ],
+            ],
+            Type: {
+                'game': {
+                    type: 'game',
+                    name: '游戏',
+                    DefaultText: '游戏胜利',
+                    DefaultVal: 2,
+                },
+                'home': {
+                    type: 'home',
+                    name: '家庭',
+                    DefaultText: '家庭活动',
+                    DefaultVal: 3,
+                },
+                'school': {
+                    type: 'school',
+                    name: '学校',
+                    DefaultText: '自由规划学习时间',
+                    DefaultVal: 2,
+                },
             },
-            {
-              name : '祭祀祖先',
-              type : 'home',
-              val : 3,
-              done : true,
-            },
-          ],
-        ],
-        [
-          new Date(2020,3,4),
-          6,
-          [
-            {
-              name : '不用上课', 
-              type : 'school',
-              val : 3,
-              done : true,
-            },
-            {
-              name : '祭祀祖先',
-              type : 'home',
-              val : 3,
-              done : true,
-            },
-          ],
-        ],
-        [
-          new Date(2020,3,3),
-          4,
-          [
-            {
-              name : '今晚吃鸡', 
-              type : 'game',
-              val : 2,
-              done : true,
-            },
-            {
-              name : '下午没课',
-              type : 'school',
-              val : 2,
-              done : true,
-            },
-          ],
-        ],
-      ],
-      Type:{
-        'game' : {
-          type : 'game',
-          name : '游戏',
-          DefaultText : '游戏胜利',
-          DefaultVal : 2,
-        },
-        'home' : {
-          type : 'home',
-          name : '家庭',
-          DefaultText : '家庭活动',
-          DefaultVal : 3,
-        },
-        'school' : {
-          type : 'school',
-          name : '学校',
-          DefaultText : '自由规划学习时间',
-          DefaultVal : 2,
-        },
-      },
-      defaultList:[
-        {
-          name : '今晚吃鸡', 
-          type : 'game',
-          val : 2,
-          done : false,
-        },
-        {
-          name : '和家人一起做了有意义的事', 
-          type : 'home',
-          val : 3,
-          done : false,
-        },
-        {
-          name : '又是可以自由规划的一天呢~', 
-          type : 'school',
-          val : 2,
-          done : false,
-        },
-      ]
+            defaultList: [{
+                    name: '今晚吃鸡',
+                    type: 'game',
+                    val: 2,
+                    done: false,
+                },
+                {
+                    name: '和家人一起做了有意义的事',
+                    type: 'home',
+                    val: 3,
+                    done: false,
+                },
+                {
+                    name: '又是可以自由规划的一天呢~',
+                    type: 'school',
+                    val: 2,
+                    done: false,
+                },
+            ]
+        }
+        getStorage('HappyThings').then((x) => {
+            if (x !== null) this.setState({ HappyThings: JSON.parse(x) });
+        });
+        getStorage('Type').then((x) => {
+            if (x !== null) this.setState({ Type: JSON.parse(x) });
+        });
+        getStorage('defaultList').then((x) => {
+            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+        });
     }
-    getStorage('HappyThings').then((x)=>{
-    if(x!==null)this.setState({HappyThings : JSON.parse(x)});
-    });
-    getStorage('Type').then((x)=>{
-      if(x!==null)this.setState({Type : JSON.parse(x)});
-    });
-    getStorage('defaultList').then((x)=>{
-      if(x!==null)this.setState({defaultList : JSON.parse(x)});
-    });
-  }
-  componentWillMount(){
-    this.updateTotHappy();
-  }
-  updateTotHappy(){
-    let tot = 0;
-    for(let i = 0; i < this.state.HappyThings.length; i++){
-      tot += this.state.HappyThings[i][1];
+    componentWillMount() {
+        this.updateTotHappy();
     }
-    this.setState({totalHappy:tot});
-  }
-  setDate(newDate) {
-    this.setState({ chosenDate: newDate });
-  }
-  getDateCNFormat(_newDate) {
-    let newDate = new Date(_newDate);
-    return (
-      <Text>
+    updateTotHappy() {
+        let tot = 0;
+        for (let i = 0; i < this.state.HappyThings.length; i++) {
+            tot += this.state.HappyThings[i][1];
+        }
+        this.setState({ totalHappy: tot });
+    }
+    setDate(newDate) {
+        this.setState({ chosenDate: newDate });
+    }
+    getDateCNFormat(_newDate) {
+        let newDate = new Date(_newDate);
+        return (
+            <Text>
         {newDate.getFullYear()}年{newDate.getMonth()+1}月{newDate.getDate()}日
       </Text>
-    );
-  }
-  getDateENFormat(_newDate) {
-    let newDate = new Date(_newDate)
-    return (
-      <Text>
+        );
+    }
+    getDateENFormat(_newDate) {
+        let newDate = new Date(_newDate)
+        return (
+            <Text>
         {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
       </Text>
     );
@@ -370,6 +505,23 @@ export class HomeScreen extends Component {
     let tot = 0;
     return (
       <View  ref = "source">
+=======
+        );
+    }
+    onTypeValueChange(value: string) {
+        this.setState({
+            _type: value
+        });
+    }
+    onValValueChange(value: string) {
+        this.setState({
+            _val: parseInt(value)
+        });
+    }
+    _renderItem({ item, index }) {
+        let tot = 0;
+        return (
+        <View>
         <ScrollView>
           <FlipCard 
             style={styles.card}
@@ -809,18 +961,19 @@ export class HomeScreen extends Component {
           </FlipCard>
         </ScrollView>
       </View>
-    );
-  }
-  dateEqual(_date1,_date2){
-    let date1 = new Date(_date1),date2 = new Date(_date2);
-    return date1.getDate()===date2.getDate() 
-    && date1.getMonth() === date2.getMonth()
-    && date1.getFullYear() === date2.getFullYear();
-  }
-  render(){
-    const {navigation} = this.props;
-    return (
-      <Container>
+        );
+    }
+    dateEqual(_date1, _date2) {
+        let date1 = new Date(_date1),
+            date2 = new Date(_date2);
+        return date1.getDate() === date2.getDate() &&
+            date1.getMonth() === date2.getMonth() &&
+            date1.getFullYear() === date2.getFullYear();
+    }
+    render() {
+        const { navigation } = this.props;
+        return (
+            <Container>
         <Header
          style={{ backgroundColor: "#00bfff" }}
          androidStatusBarColor="#00bfff"
@@ -840,11 +993,6 @@ export class HomeScreen extends Component {
           </Right>
         </Header>
         <View>
-          {/*}
-          <Text style={styles.counter}>
-            {this.getDateENFormat(this.state.HappyThings[this.state.index][0])}
-          </Text>
-        */}
           <Carousel
             ref={(c) => this.carousel = c}
             data={this.state.HappyThings}
@@ -975,56 +1123,49 @@ export class HomeScreen extends Component {
           </View>
         </Modal>
       </Container>
-    );
-  }
+        );
+    }
 }
 const styles = StyleSheet.create({
-  checkList:{
-  },
-  newDateModal:{
-    padding: 20,
-    backgroundColor: 'white',
-    height: SLIDER_HEIGHT-20,
-  },
-  carouselContainer: {
-    marginTop: 10
-  },
-  itemContainer: {
-    //width: ITEM_WIDTH,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  itemDate:{
-    alignItems:'flex-start',
-    flex: 1,
-  },
-  itemContain:{
-    height: Content_HEIGHT,
-    alignItems: 'flex-end',
-  },
-  itemButtom:{
-    alignItems: 'flex-end',
-    justifyContent: 'center',
-    height: 50,
-  },
-  counter: {
-    marginTop: 25,
-    fontSize: 30,
-    fontWeight: 'bold',
-    textAlign: 'center'
-  },
+    checkList: {},
+    newDateModal: {
+        padding: 20,
+        backgroundColor: 'white',
+        height: SLIDER_HEIGHT - 20,
+    },
+    carouselContainer: {
+        marginTop: 10
+    },
+    itemContainer: {
+        //width: ITEM_WIDTH,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    itemDate: {
+        alignItems: 'flex-start',
+        flex: 1,
+    },
+    itemContain: {
+        height: Content_HEIGHT,
+        alignItems: 'flex-end',
+    },
+    itemButtom: {
+        alignItems: 'flex-end',
+        justifyContent: 'center',
+        height: 50,
+    },
 });
 
 /* 导航插件 */
 
 const DrawerNav = createDrawerNavigator();
 
-export default function App(){
-  RNShakeEvent.addEventListener('shake', () => {
-      console.log('Device shake!');
+export default function App() {
+    RNShakeEvent.addEventListener('shake', () => {
+        console.log('Device shake!');
     });
-  return (
-    <NavigationContainer>
+    return (
+        <NavigationContainer>
       <DrawerNav.Navigator initialRouteName="主页" 
       drawerStyle={{width: 240}} 
       drawerContentOptions={{
@@ -1046,8 +1187,9 @@ export default function App(){
       >
         <DrawerNav.Screen name="主页" component={HomeScreen} />
         <DrawerNav.Screen name="种草" component={wishlist} />
+        <DrawerNav.Screen name="设置" component={setting} />
         <DrawerNav.Screen name="关于" component={AboutScreen} />
       </DrawerNav.Navigator>
     </NavigationContainer>
-  );
+    );
 }
