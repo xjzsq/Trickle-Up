@@ -214,7 +214,7 @@ export default class wishlist extends Component {
               <Content>
                 <Form>
                   <Item>
-                    <Image source={this.state.modalTemp.imgSource} />
+                    <Image source={this.state.modalTemp.imgSource} style={{width: 160, height: 90}}/>
                   </Item>
                   <Item floatingLabel>
                     <Label>Name</Label>
