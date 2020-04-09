@@ -40,7 +40,6 @@ export class HomeScreen extends Component {
     });
   }
 }
-=======
 import React, { Component } from 'react';
 import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage, DatePickerAndroid } from 'react-native';
 import {
