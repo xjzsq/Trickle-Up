@@ -386,10 +386,17 @@ export class HomeScreen extends Component {
                         const {action, year, month, day} = await DatePickerAndroid.open({
                           // 要设置默认值为今天的话，使用`new Date()`即可。
                           // 下面显示的会是2020年5月25日。月份是从0开始算的。
-                          date: new Date(),
+                          date: new Date(item[0]),
                         });
                         if (action !== DatePickerAndroid.dismissedAction) {
-                          alert(month+1);// 这里开始可以处理用户选好的年月日三个参数：year, month (0-11), day
+                          // 这里开始可以处理用户选好的年月日三个参数：year, month (0-11), day
+                          for(let i = 0;i < this.state.HappyThings.length; i++){
+                            if(this.dateEqual(new Date(year,month,day),this.state.HappyThings[i][0])){
+                              this.carousel.snapToItem(i);
+                              return;
+                            }
+                          }
+                          alert('还没创建这一天的卡片呢~');
                         }
                       } catch ({code, message}) {
                         console.warn('Cannot open date picker', message);
