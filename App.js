@@ -38,6 +38,8 @@ import FlipCard from 'react-native-flip-card' //卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
+import {captureRef} from "react-native-view-shot";
+import Share from 'react-native-share';
 
 const setStorage = async (key, value) => {
     try {
@@ -134,6 +136,126 @@ const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
 const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
 const Content_HEIGHT = SLIDER_HEIGHT - 180;
 export class HomeScreen extends Component {
+  constructor(props) {
+    super(props);
+    this.refs = {};
+    this._renderItem = this._renderItem.bind(this);
+    this.setDate = this.setDate.bind(this);
+    this.state={
+      index : 0,
+      modalVisible: false,
+      setVisible: -1,
+      newVisible: -1,
+      useDefaultPlan: false,
+      nowBack: -1,
+      fabActive: false,
+      _name : '',
+      _type : '',
+      _val : 0,
+      _done : false,
+      _default : false,
+      chosenDate: new Date(),
+      HappyThings:[
+        [
+          new Date(2020,3,10),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,9),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,8),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,7),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,6),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+            },
+            {
+              name : '祭祀祖先',
+              type : 'home',
+              val : 3,
+              done : true,
+            },
+          ],
+        ],
+        [
+          new Date(2020,3,5),
+          6,
+          [
+            {
+              name : '不用上课', 
+              type : 'school',
+              val : 3,
+              done : true,
+=======
     constructor(props) {
         super(props);
         this._renderItem = this._renderItem.bind(this);
@@ -367,6 +489,23 @@ export class HomeScreen extends Component {
             <Text>
         {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
       </Text>
+    );
+  }
+  onTypeValueChange(value: string) {
+    this.setState({
+      _type: value
+    });
+  }
+  onValValueChange(value: string) {
+    this.setState({
+      _val: parseInt(value)
+    });
+  }
+  _renderItem({ item, index }) {
+    let tot = 0;
+    return (
+      <View  ref = "source">
+=======
         );
     }
     onTypeValueChange(value: string) {
@@ -395,7 +534,7 @@ export class HomeScreen extends Component {
             onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
           >
             {/* Face Side */}
-            <View style={styles.face}>
+            <View style={styles.face} res={shot=>this.refs[`${index}`] = shot}>
               <Card>
                 <CardItem header>
                   <Left>
@@ -452,6 +591,19 @@ export class HomeScreen extends Component {
                   <Button primary onPress={() => {this.setState({nowBack:index})}}>
                     <Icon name='settings' />
                   </Button>
+                  <Button onPress={() =>{
+              captureRef(this.refs[`${index}`],{
+                format: "jpg",
+                quality: 0.8,
+                result:"data-uri"
+              }).then(res => {
+                Share.open({
+                  url: res
+                })
+              })
+            }} >
+              <Icon name='share' />
+            </Button>
                 </CardItem>
               </Card>
             </View>
@@ -867,7 +1019,7 @@ export class HomeScreen extends Component {
             <Button onPress={() => {this.setState({modalVisible:true})}} style={{ backgroundColor: '#ED4A6A' }}>
               <Icon name="add" />
             </Button>
-            <Button disabled style={{ backgroundColor: '#3B5998' }}>
+            <Button style={{ backgroundColor: '#3B5998' }} >
               <Icon name="share" />
             </Button>
           </Fab>

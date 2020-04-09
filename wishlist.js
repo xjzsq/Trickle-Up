@@ -214,10 +214,9 @@ export default class wishlist extends Component {
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  <Item>
+                  <Item style={{width: Dimensions.get('window').width * 0.4, height: Dimensions.get('window').height * 0.1}}>
                     <Image
                       source={this.state.modalTemp.imgSource}
-                      style={{width: 160, height: 90}}
                     />
                   </Item>
                   <Item floatingLabel>
