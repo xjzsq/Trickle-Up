@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage, DatePickerAndroid } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, DatePickerAndroid } from 'react-native';
 import {
     Container,
     Text,
@@ -31,36 +31,13 @@ import {
 } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-//import { AsyncStorage } from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card' //卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
-
-const setStorage = async (key, value) => {
-    try {
-        await AsyncStorage.setItem(key, value);
-        return true;
-    } catch (error) {
-        // Error saving data
-        return false;
-    }
-}
-
-const getStorage = async (key) => {
-    try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-            return value;
-        }
-    } catch (error) {
-        // Error retrieving data
-        return null;
-    }
-    return null;
-}
+import Storage from './storage.js'
 
 /* about screen */
 const cards = [{
@@ -295,19 +272,16 @@ export class HomeScreen extends Component {
                     type: 'game',
                     name: '游戏',
                     DefaultText: '游戏胜利',
-                    DefaultVal: 2,
                 },
                 'home': {
                     type: 'home',
                     name: '家庭',
                     DefaultText: '家庭活动',
-                    DefaultVal: 3,
                 },
                 'school': {
                     type: 'school',
                     name: '学校',
                     DefaultText: '自由规划学习时间',
-                    DefaultVal: 2,
                 },
             },
             defaultList: [{
@@ -330,14 +304,21 @@ export class HomeScreen extends Component {
                 },
             ]
         }
-        getStorage('HappyThings').then((x) => {
+        Storage.getStorage('HappyThings').then((x) => {
             if (x !== null) this.setState({ HappyThings: JSON.parse(x) });
         });
-        getStorage('Type').then((x) => {
+        Storage.getStorage('Type').then((x) => {
             if (x !== null) this.setState({ Type: JSON.parse(x) });
+            else {
+              Storage.setStorage('Type',JSON.stringify(this.state.Type));
+              Storage.getStorage('Type').then((x) => {console.log(x);});
+            }
         });
-        getStorage('defaultList').then((x) => {
+        Storage.getStorage('defaultList').then((x) => {
             if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+            else{
+              Storage.setStorage('defaultList',JSON.stringify(this.state.defaultList));
+            }
         });
     }
     componentWillMount() {
@@ -474,7 +455,7 @@ export class HomeScreen extends Component {
                           }
                           item[1]=totHappy;
                           this.setState({HappyThings:this.state.HappyThings});
-                          setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
+                          Storage.setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
                           this.updateTotHappy();
                         }
                       }/>
@@ -584,7 +565,7 @@ export class HomeScreen extends Component {
                                   if(this.state.HappyThings[index][2][i].name===items.name){
                                     this.setState({HappyThings:this.state.HappyThings});
                                     //存储数据
-                                    setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                    Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                                       this.setState({setVisible:-1})
                                     );
                                   }
@@ -616,7 +597,7 @@ export class HomeScreen extends Component {
                                 item[1]=totHappy;
                                 this.setState({HappyThings:this.state.HappyThings});
                                 //存储数据
-                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
+                                Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
                                   this.updateTotHappy();
                                   this.setState({setVisible:-1});
                                 }
@@ -769,7 +750,7 @@ export class HomeScreen extends Component {
                                   done:false,
                                 });
                                 this.setState({defaultList:this.state.defaultList});
-                                setStorage('defaultList',JSON.stringify(this.state.defaultList));
+                                Storage.setStorage('defaultList',JSON.stringify(this.state.defaultList));
                               }
                               item[2].push(
                               {
@@ -785,7 +766,7 @@ export class HomeScreen extends Component {
                               item[1]=totHappy;
                               //存储数据
                               this.setState({HappyThings:this.state.HappyThings});
-                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
+                              Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
                                 this.updateTotHappy();
                                 this.setState({newVisible:-1});
                               }
@@ -960,7 +941,7 @@ export class HomeScreen extends Component {
                     this.setState({HappyThings :list});
                   }
                   //存储数据
-                  setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                  Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                     this.setState({modalVisible:false})
                   );
                 }}>

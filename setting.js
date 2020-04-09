@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage, DatePickerAndroid } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid } from 'react-native';
 import {
     Container,
     Text,
@@ -31,41 +31,34 @@ import {
 } from 'native-base';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card' //卡片翻转效果
+import Modal from 'react-native-modal';
+import Storage from './storage.js'
 
-const setStorage = async (key, value) => {
-    try {
-        await AsyncStorage.setItem(key, value);
-        return true;
-    } catch (error) {
-        // Error saving data
-        return false;
-    }
-}
-
-const getStorage = async (key) => {
-    try {
-        const value = await AsyncStorage.getItem(key);
-        if (value !== null) {
-            return value;
-        }
-    } catch (error) {
-        // Error retrieving data
-        return null;
-    }
-    return null;
-}
+const SLIDER_WIDTH = Dimensions.get('window').width;
+const SLIDER_HEIGHT = Dimensions.get('window').height;
+const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.8);
+const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
+const Content_HEIGHT = SLIDER_HEIGHT - 180;
 
 export default class setting extends Component {
     constructor(props) {
         super(props);
         this.state = {
-        	nowBack:false;
+        	_name : '',
+        	_default : '',
+        	nowBack : false,
+        	typeModalVisible : false,
+        	Type: [],
+        	defaultList:[],
         }
-        getStorage('Type').then((x) => {
-            if (x !== null) this.setState({ Type: JSON.parse(x) });
+        Storage.getStorage('Type').then((x) => {
+        	alert(x);
+           if (x !== null) this.setState({ Type: JSON.parse(x) });
+						
         });
-        getStorage('defaultList').then((x) => {
-            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+
+        Storage.getStorage('defaultList').then((x) => {
+           if (x !== null) this.setState({ defaultList: JSON.parse(x) });
         });
     }
     render() {
@@ -120,13 +113,12 @@ export default class setting extends Component {
                       }
                     }}>
                         <Icon name='calendar'/>
-                        {默认列表设置}
+                        <Text>默认列表设置</Text>
                     </Button>
                   </Left>
                 </CardItem>
                 <View style={styles.itemContain}>
                   {this.state.defaultList.map((items)=>{
-                      tot++;
                       return(
                       <CardItem CardBody style={styles.itemContainer}>
                         <Left>
@@ -141,10 +133,10 @@ export default class setting extends Component {
                           <Text>{items.val}</Text>
                       </CardItem>);
                   })}
-                  <Text>{tot?'':"这里空空如也,赶快去寻找让你幸福的事吧~"}</Text>
+                  <Text>{(this.state.defaultList.length === 0)?'':"这里空空如也,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
-                  <Button primary onPress={() => {this.setState({nowBack:index})}}>
+                  <Button primary onPress={() => {this.setState({nowBack:true})}}>
                     <Icon name='settings' />
                   </Button>
                 </CardItem>
@@ -154,13 +146,15 @@ export default class setting extends Component {
             <View>
               <Card>
                 <CardItem header>
-                  <Text>这些幸福，你捕捉到了吗？还没的话，就快去实现吧~</Text>
                 </CardItem>
                 <View style={{height:Content_HEIGHT}}>
-                  {item[2].map((items)=>{
+
+                  <Text>说到底，幸福这种东西是因人而异的，有人觉得有饭吃就很幸福，有人觉得有书看就很幸福，有人认为努力活在当下才是最重要的，也有人在达到某种目标的瞬间便感到此生无憾，有些人只要某个人得到幸福，自己就会跟着幸福，也有些人则令人伤透脑筋地刚好相反。(《末日时在做什么？有没有空？可以来拯救吗？》兰朵露可)</Text>
+                  <Text>所以...那些种类的事情能让你感到幸福呢？</Text>
+                  {this.state.Type.map((items)=>{
                     return(
                     <CardItem style={styles.checkList}>
-                      <CheckBox checked={items.done} onPress={
+                      {/*<CheckBox checked={items.done} onPress={
                         ()=>{
                           items.done=!items.done;
                           let totHappy = 0;
@@ -173,183 +167,45 @@ export default class setting extends Component {
                           this.updateTotHappy();
                         }
                       }/>
+                    */}
                       <Left style={{paddingLeft: 20}}>
                         <Text>{items.name}</Text>
                       </Left>
                       <Right>
                         <Button large info style={{height:20,borderColor:'transparent'}}
                         bordered onPress={()=>{
-                          this.setState({_name:items.name}),
-                          this.setState({_type:items.type}),
-                          this.setState({_val:items.val}),
-                          this.setState({_done:items.done}),
-                          this.setState({setVisible:items.name})
+                        	//删除函数
                         }}>
-                          <Icon name="arrow-forward" />
+                          <Icon name="close" />
                         </Button>
                       </Right>
-                      <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={this.state.setVisible === items.name}
-                        onRequestClose={() => {
-                          this.setState({ setVisible: -1 })
-                        }}
-                      >
-                        <View>
-                          <Header style={{ backgroundColor: '#00bfff' }}
-                            androidStatusBarColor="#00bfff"
-                          >
-                            <Left>
-                              <Button transparent onPress={() => {
-                                this.setState({ setVisible: -1 })
-                              }}
-                              >
-                                <Icon name='arrow-back' />
-                              </Button>
-                            </Left>
-                            <Body>
-                              <Title>{items.name}</Title>
-                            </Body>
-                            <Right>
-                              {/*
-                              <Button transparent>
-                                <Text>Cancel</Text>
-                              </Button>
-                              */}
-                            </Right>
-                          </Header>
-                          <View style={styles.newDateModal}>
-                            <Text style={{fontSize:20,color: 'gray'}}>
-                              这件事是否让你感到更加幸福了呢？
-                            </Text>
-                            <ListItem>
-                              <Item floatingLabel>
-                                <Label>事件名称</Label>
-                                <Input 
-                                  value={this.state._name}
-                                  onChangeText={(text) => {this.setState({_name:text})}}
-                                />
-                              </Item>
-                            </ListItem>
-                            <ListItem>
-                              <Text>选择分类:</Text>
-                              <Picker
-                                note
-                                mode="dropdown"
-                                style={{ width: 120 }}
-                                selectedValue={this.state._type}
-                                onValueChange={this.onTypeValueChange.bind(this)}
-                              >
-                                {Object.keys(this.state.Type).map((obj, idx) => (
-                                  <Picker.Item style={{justifyContent:'center'}} label={this.state.Type[obj].name} value={this.state.Type[obj].type} />       
-                                ))}
-                              </Picker>
-                            </ListItem>
-                            <ListItem>
-                              <Icon name='heart' style={{ color: '#ED4A6A' }}/>
-                              <Text> 幸福指数：</Text>
-                              <Picker
-                                note
-                                mode="dropdown"
-                                style={{ width: 120 }}
-                                selectedValue={this.state._val}
-                                onValueChange={this.onValValueChange.bind(this)}
-                              >
-                                <Picker.Item label="0" value={parseInt("0")} />
-                                <Picker.Item label="1" value={parseInt("1")} />
-                                <Picker.Item label="2" value={parseInt("2")} />
-                                <Picker.Item label="3" value={parseInt("3")} />
-                                <Picker.Item label="4" value={parseInt("4")} />
-                                <Picker.Item label="5" value={parseInt("5")} />
-                              </Picker>
-                            </ListItem>
-                            <ListItem>
-                              <CheckBox checked={this.state._done} onPress={
-                                ()=>this.setState({_done:!this.state._done})
-                              }/>
-                              <Body>
-                                <Text>我已经通过这个获得幸福啦~</Text>
-                              </Body>
-                            </ListItem>
-                            <ListItem>
-                              <Button iconLeft danger onPress={()=>{
-                                //删除询问 TODO
-                                for(let i = 0; i < this.state.HappyThings[index][2].length; i++){
-                                  if(this.state.HappyThings[index][2][i].name===items.name){
-                                    this.setState({HappyThings:this.state.HappyThings});
-                                    //存储数据
-                                    setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
-                                      this.setState({setVisible:-1})
-                                    );
-                                  }
-                                }
-                              }}>
-                                <Icon name='trash'/>
-                                <Text>删除本事件</Text>
-                              </Button>
-                            </ListItem>
-                            <View>
-                              <Button success onPress={()=>{
-                                let i = 0,fix=0;
-                                while(i < this.state.HappyThings[index][2].length){
-                                  if(this.state.HappyThings[index][2][i].name===items.name){
-                                    fix=i;
-                                  } else if(this.state._name===this.state.HappyThings[index][2][i].name){
-                                    alert("名称重复，你在这一天已经记录过一次这件幸福的事情了...");
-                                  }
-                                  i++;
-                                }
-                                items.name=this.state._name;
-                                items.type=this.state._type;
-                                items.val=this.state._val;
-                                if(items.done!==this.state._done)items.done=this.state._done;
-                                let totHappy = 0;
-                                for(let i = 0; i < item[2].length;i++){
-                                  if(item[2][i].done)totHappy+=item[2][i].val;
-                                }
-                                item[1]=totHappy;
-                                this.setState({HappyThings:this.state.HappyThings});
-                                //存储数据
-                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
-                                  this.updateTotHappy();
-                                  this.setState({setVisible:-1});
-                                }
-                                );
-                              }}>
-                                <Icon name='checkmark'/>
-                              </Button>
-                            </View>
-                          </View>
-                        </View>
-                      </Modal>
+                      
                     </CardItem>
                     );})}
                   <CardItem style={styles.checkList} >
-                    <Icon name='add' style={{paddingLeft:13}}/>
                     <Left style={{paddingLeft: 9}}>
-                      <Text>又感到了幸福?</Text>
+                      <Text>发现了新的能你幸福的事情种类?</Text>
                     </Left>
                     <Right>
                       <Button large info style={{height:20,borderColor:'transparent'}}
                       bordered onPress={()=>{
                         this.setState({_name:''}),
-                        this.setState({_type:'home'}),
-                        this.setState({_val:0}),
-                        this.setState({_done:false}),
-                        this.setState({_default:false}),
-                        this.setState({newVisible:index})
+                        this.setState({_default:''}),
+                        this.setState({typeModalVisible:!this.state.typeModalVisible})
                       }}>
-                        <Icon name="arrow-forward" />
+                        <Icon name="add" />
                       </Button>
                     </Right>
                     <Modal
-                      animationType="slide"
-                      transparent={true}
-                      visible={this.state.newVisible === index}
-                      onRequestClose={() => {
-                        this.setState({ newVisible: -1 })
-                      }}
+                      isVisible={this.state.typeModalVisible}
+						          onBackdropPress={()=>{this.setState({typeModalVisible:!this.state.typeModalVisible})}}
+						          backdropOpacity={0.0}
+						          style={{
+						            width: Dimensions.get('window').width ,
+						            height: Dimensions.get('window').height * 0.5,
+						            alignContent: 'center',
+						            padding: 30,
+						          }}
                     >
                       <View>
                         <Header style={{ backgroundColor: '#00bfff' }}
@@ -357,7 +213,7 @@ export default class setting extends Component {
                         >
                           <Left>
                             <Button transparent onPress={() => {
-                              this.setState({ newVisible: -1 })
+                              this.setState({ typeModalVisible : !this.state.typeModalVisible })
                             }}
                             >
                               <Icon name='arrow-back' />
@@ -371,118 +227,49 @@ export default class setting extends Component {
                         </Header>
                         <View style={styles.newDateModal}>
                           <Text style={{fontSize:20,color: 'gray'}}>
-                            又发现了幸福的事情吗？记下来！
+                            又发现了新的能你幸福的事情种类？记下来！
                           </Text>
                           <ListItem>
                             <Item floatingLabel style={{underlineColor:'transparent'}}>
-                              <Label>事件名称</Label>
+                              <Label>种类名称</Label>
                               <Input 
                                 value={this.state._name}
                                 onChangeText={(text) => {this.setState({_name:text})}}
                               />
                             </Item>
                           </ListItem>
+                          
                           <ListItem>
-                            <Text>选择分类:</Text>
-                            <Picker
-                              note
-                              mode="dropdown"
-                              style={{ width: 120 }}
-                              selectedValue={this.state._type}
-                              onValueChange={this.onTypeValueChange.bind(this)}
-                            >
-                              {Object.keys(this.state.Type).map((obj, idx) => (
-                                <Picker.Item style={{justifyContent:'center'}} label={this.state.Type[obj].name} value={this.state.Type[obj].type} />       
-                              ))}
-                            </Picker>
-                          </ListItem>
-                          <ListItem>
-                            <Icon name='heart' style={{ color: '#ED4A6A' }}/>
-                            <Text> 幸福指数：</Text>
-                            <Picker
-                              note
-                              mode="dropdown"
-                              style={{ width: 120 }}
-                              selectedValue={this.state._val}
-                              onValueChange={this.onValValueChange.bind(this)}
-                            >
-                              <Picker.Item label="0" value={parseInt("0")} />
-                              <Picker.Item label="1" value={parseInt("1")} />
-                              <Picker.Item label="2" value={parseInt("2")} />
-                              <Picker.Item label="3" value={parseInt("3")} />
-                              <Picker.Item label="4" value={parseInt("4")} />
-                              <Picker.Item label="5" value={parseInt("5")} />
-                            </Picker>
-                          </ListItem>
-                          <ListItem>
-                            <CheckBox checked={this.state._default} onPress={
-                              ()=>this.setState({_default:!this.state._default})
-                            }/>
-                            <Body>
-                              <Text>加入默认列表中</Text>
-                            </Body>
-                          </ListItem>
-                          <ListItem>
-                            <CheckBox checked={this.state._done} onPress={
-                              ()=>this.setState({_done:!this.state._done})
-                            }/>
-                            <Body>
-                              <Text>我已经通过这个获得幸福啦~</Text>
-                            </Body>
+                            <Item floatingLabel style={{underlineColor:'transparent'}}>
+                              <Label>描述一下？</Label>
+                              <Input 
+                                value={this.state._default}
+                                onChangeText={(text) => {this.setState({_default:text})}}
+                              />
+                            </Item>
                           </ListItem>
                           <View>
                             <Button success onPress={()=>{
-                              let i = 0;
-                              while(i < this.state.HappyThings[index][2].length){
-                                if(this.state._name===this.state.HappyThings[index][2][i].name){
-                                  alert("名称重复，你在这一天已经记录过一次这个幸福了...");
+                              for(let i = 0; i < this.state.Type.length; i++){
+                              	if(this.state._name===this.state.Type[i].name){
+                              		alert("名称重复，已经有这个种类了...");
                                   return;
-                                }
-                                i++;
+                              	}
                               }
                               if(this.state._name===''){
-                                alert("是什么秘密的事情幸福的让你说不出来呀？写下来嘛~");
+                                alert("总能找到这个分类的名字吧~");
                                 return;
                               }
-                              i=0;
-                              if(this.state._default){
-                                for(let i=0;i<this.state.defaultList.length;i++){
-                                  if(this.state._name===this.state.defaultList[i].name){
-                                    if(this.state._type!==this.state.defaultList[i].type 
-                                      || this.state._val!==this.state.defaultList[i].val){
-                                      alert("默认列表中已经有这件让你幸福的事情了~");
-                                      return;
-                                    }
-                                    break;
-                                  }
-                                }
-                                this.state.defaultList.push(
-                                {
-                                  name:this.state._name,
-                                  type:this.state._type,
-                                  val:this.state._val,
-                                  done:false,
-                                });
-                                this.setState({defaultList:this.state.defaultList});
-                                setStorage('defaultList',JSON.stringify(this.state.defaultList));
-                              }
-                              item[2].push(
+                              this.state.Type.push(
                               {
                                 name:this.state._name,
-                                type:this.state._type,
-                                val:this.state._val,
-                                done:this.state._done,
+                                type:this.state._name,
+                                default:this.state._default,
                               });
-                              let totHappy = 0;
-                              for(let i = 0; i < item[2].length;i++){
-                                if(item[2][i].done)totHappy+=item[2][i].val;
-                              }
-                              item[1]=totHappy;
                               //存储数据
-                              this.setState({HappyThings:this.state.HappyThings});
-                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
-                                this.updateTotHappy();
-                                this.setState({newVisible:-1});
+                              this.setState({Type:this.state.Type});
+                              Storage.setStorage('Type', JSON.stringify(this.state.Type)).then(()=>{
+                                this.setState({typeModalVisible:!this.state.typeModalVisible});
                               }
                               );
                             }}>
@@ -495,7 +282,7 @@ export default class setting extends Component {
                   </CardItem>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
-                  <Button success onPress={() => {this.setState({nowBack:-1})}}>
+                  <Button success onPress={() => {this.setState({nowBack:!this.state.nowBack})}}>
                     <Icon name='checkmark' />
                   </Button>
                 </CardItem>
@@ -513,14 +300,13 @@ const styles = StyleSheet.create({
     checkList: {},
     newDateModal: {
         padding: 20,
-        backgroundColor: 'white',
-        height: SLIDER_HEIGHT - 20,
+        backgroundColor: 'white', 
     },
     carouselContainer: {
         marginTop: 10
     },
     itemContainer: {
-        //width: ITEM_WIDTH,
+        width: ITEM_WIDTH,
         alignItems: 'center',
         justifyContent: 'center',
     },
