@@ -6,7 +6,7 @@ import {
   LayoutAnimation,
   TouchableOpacity,
   CheckBox,
-  AsyncStorage, 
+  AsyncStorage,
 } from 'react-native';
 import {
   Container,
@@ -90,12 +90,11 @@ export default class wishlist extends Component {
     };
     if (tempCnt)
       tempCnt.then(val => {
-        if (val !== '' && val !== undefined)
-          this.state.totalItem = parseInt(val);
+        if (val) this.state.totalItem = parseInt(val);
       });
     if (tempData) {
       tempData.then(val => {
-        if (val !== '' && val !== undefined) {
+        if (val) {
           const jsonval = JSON.parse(val);
           this.setState({data: jsonval});
         }
@@ -105,20 +104,22 @@ export default class wishlist extends Component {
 
   renderItem = ({item, index, drag}) => {
     return (
-      <TouchableOpacity onLongPress={drag}>
-        <SwipeRow leftOpenValue={75} rightOpenValue={-75} disableLeftSwipe = {true}>
-          <View style={styles.standaloneRowBack} >
-            <Text style={styles.backTextWhite} onPress={()=>{
+      <SwipeRow leftOpenValue={75} rightOpenValue={-75} disableLeftSwipe={true}>
+        <View style={styles.standaloneRowBack}>
+          <Text
+            style={styles.backTextWhite}
+            onPress={() => {
               const updd = this.state.data.filter(d => d !== item);
-              LayoutAnimation.configureNext(
-                LayoutAnimation.Presets.spring,
-              );
+              LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
               this.state.totalItem--;
               this.setState({data: updd});
               this.saveData();
-            }} >Right</Text>
-          </View>
-          <View>
+            }}>
+            删除
+          </Text>
+        </View>
+        <View>
+          <TouchableOpacity onLongPress={drag} activeOpacity={0.85}>
             <Container style={{height: 120, padding: 15}}>
               <Content>
                 <CardItem>
@@ -148,9 +149,9 @@ export default class wishlist extends Component {
                 </CardItem>
               </Content>
             </Container>
-          </View>
-        </SwipeRow>
-      </TouchableOpacity>
+          </TouchableOpacity>
+        </View>
+      </SwipeRow>
     );
   };
 
@@ -214,7 +215,10 @@ export default class wishlist extends Component {
               <Content>
                 <Form>
                   <Item>
-                    <Image source={this.state.modalTemp.imgSource} style={{width: 160, height: 90}}/>
+                    <Image
+                      source={this.state.modalTemp.imgSource}
+                      style={{width: 160, height: 90}}
+                    />
                   </Item>
                   <Item floatingLabel>
                     <Label>Name</Label>
@@ -277,6 +281,12 @@ export default class wishlist extends Component {
                       });
                       this.saveData();
                       this.setState({
+                        modalTemp: {
+                          name: '',
+                          key: 0,
+                          price: 0,
+                          imgSource: null,
+                        },
                         isModalVisible: !this.state.isModalVisible,
                       });
                     }}>
@@ -321,14 +331,18 @@ const styles = StyleSheet.create({
   },
   standaloneRowBack: {
     alignItems: 'center',
-    backgroundColor: 'tomato',
+    backgroundColor: 'white',
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     padding: 15,
   },
   backTextWhite: {
-    color: '#FFF',
+    backgroundColor: 'tomato',
+    color: 'white',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 15,
   },
   spacer: {
     height: 50,
