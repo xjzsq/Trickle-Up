@@ -1,15 +1,39 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage } from 'react-native';
 import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, ListItem, List, Form, Label, Item,
-   FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem, Fab, DatePicker, CheckBox, Input,
+   FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem, Fab, DatePicker, CheckBox, Input, Picker,
     } from 'native-base';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
-import { AsyncStorage } from '@react-native-community/async-storage';
+//import { AsyncStorage } from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card'//卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
+
+const setStorage = async (key,value) => {
+  try {
+    await AsyncStorage.setItem(key, value);
+    return true;
+  } catch (error) {
+    // Error saving data
+    return false;
+  }
+}
+
+const getStorage = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    if (value !== null) {
+      return value;
+    }
+   } catch (error) {
+     // Error retrieving data
+     return null;
+   }
+   return null;
+}
+
 /* about screen */
 const cards = [
   {
@@ -249,16 +273,19 @@ export class HomeScreen extends Component {
       ],
       Type:{
         'game' : {
+          type : 'game',
           name : '游戏',
           DefaultText : '游戏胜利',
           DefaultVal : 2,
         },
         'home' : {
+          type : 'home',
           name : '家庭',
           DefaultText : '家庭活动',
           DefaultVal : 3,
         },
         'school' : {
+          type : 'school',
           name : '学校',
           DefaultText : '自由规划学习时间',
           DefaultVal : 2,
@@ -285,6 +312,15 @@ export class HomeScreen extends Component {
         },
       ]
     }
+    getStorage('HappyThings').then((x)=>{
+    if(x!==null)this.setState({HappyThings : JSON.parse(x)});
+    });
+    getStorage('Type').then((x)=>{
+      if(x!==null)this.setState({Type : JSON.parse(x)});
+    });
+    getStorage('defaultList').then((x)=>{
+      if(x!==null)this.setState({defaultList : JSON.parse(x)});
+    });
   }
   setDate(newDate) {
     this.setState({ chosenDate: newDate });
@@ -303,7 +339,16 @@ export class HomeScreen extends Component {
       </Text>
     );
   }
-  
+  onTypeValueChange(value: string) {
+    this.setState({
+      _type: value
+    });
+  }
+  onValValueChange(value: string) {
+    this.setState({
+      _val: parseInt(value)
+    });
+  }
   _renderItem({ item, index }) {
     let tot = 0;
     return (
@@ -351,7 +396,7 @@ export class HomeScreen extends Component {
                       </CardItem>);
                     }
                   })}
-                  <Text>{tot?'':"这里空空如也，赶快去寻找让你幸福的事情吧~"}</Text>
+                  <Text>{tot?'':"这里空空如也,赶快去寻找让你幸福的事吧~"}</Text>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
                   <Button primary onPress={() => {this.setState({nowBack:index})}}>
@@ -429,7 +474,7 @@ export class HomeScreen extends Component {
                             <Text style={{fontSize:20,color: 'gray'}}>
                               这件事是否让你感到更加幸福了呢？
                             </Text>
-                            <Form>
+                            <ListItem>
                               <Item floatingLabel>
                                 <Label>事件名称</Label>
                                 <Input 
@@ -437,7 +482,39 @@ export class HomeScreen extends Component {
                                   onChangeText={(text) => {this.setState({_name:text})}}
                                 />
                               </Item>
-                            </Form>
+                            </ListItem>
+                            <ListItem>
+                              <Text>选择分类:</Text>
+                              <Picker
+                                note
+                                mode="dropdown"
+                                style={{ width: 120 }}
+                                selectedValue={this.state._type}
+                                onValueChange={this.onTypeValueChange.bind(this)}
+                              >
+                                {Object.keys(this.state.Type).map((obj, idx) => (
+                                  <Picker.Item style={{justifyContent:'center'}} label={this.state.Type[obj].name} value={this.state.Type[obj].type} />       
+                                ))}
+                              </Picker>
+                            </ListItem>
+                            <ListItem>
+                              <Icon name='heart' style={{ color: '#ED4A6A' }}/>
+                              <Text> 幸福指数：</Text>
+                              <Picker
+                                note
+                                mode="dropdown"
+                                style={{ width: 120 }}
+                                selectedValue={this.state._val}
+                                onValueChange={this.onValValueChange.bind(this)}
+                              >
+                                <Picker.Item label="0" value={parseInt("0")} />
+                                <Picker.Item label="1" value={parseInt("1")} />
+                                <Picker.Item label="2" value={parseInt("2")} />
+                                <Picker.Item label="3" value={parseInt("3")} />
+                                <Picker.Item label="4" value={parseInt("4")} />
+                                <Picker.Item label="5" value={parseInt("5")} />
+                              </Picker>
+                            </ListItem>
                             <ListItem>
                               <CheckBox checked={this.state._done} onPress={
                                 ()=>this.setState({_done:!this.state._done})
@@ -460,16 +537,17 @@ export class HomeScreen extends Component {
                                 items.name=this.state._name;
                                 items.type=this.state._type;
                                 items.val=this.state._val;
-                                if(items.done!==this.state._done){
-                                  items.done=this.state._done;
-                                  let totHappy = 0;
-                                  for(let i = 0; i < item[2].length;i++){
-                                    if(item[2][i].done)totHappy+=item[2][i].val;
-                                  }
-                                  item[1]=totHappy;
+                                if(items.done!==this.state._done)items.done=this.state._done;
+                                let totHappy = 0;
+                                for(let i = 0; i < item[2].length;i++){
+                                  if(item[2][i].done)totHappy+=item[2][i].val;
                                 }
+                                item[1]=totHappy;
+                                this.setState({HappyThings:this.state.HappyThings});
                                 //存储数据
-                                this.setState({setVisible:-1});
+                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                  this.setState({setVisible:-1})
+                                );
                               }}>
                                 <Icon name='checkmark'/>
                               </Button>
@@ -479,10 +557,10 @@ export class HomeScreen extends Component {
                       </Modal>
                     </CardItem>
                     );})}
-                  <CardItem style={styles.checkList}>
-                    <CheckBox checked={false} />
-                    <Left style={{paddingLeft: 20}}>
-                      <Text>我又发现了幸福！</Text>
+                  <CardItem style={styles.checkList} >
+                    <Icon name='add' style={{paddingLeft:13}}/>
+                    <Left style={{paddingLeft: 9}}>
+                      <Text>又感到了幸福?</Text>
                     </Left>
                     <Right>
                       <Button large info style={{height:20,borderColor:'transparent'}}
@@ -526,15 +604,47 @@ export class HomeScreen extends Component {
                           <Text style={{fontSize:20,color: 'gray'}}>
                             又发现了幸福的事情吗？记下来！
                           </Text>
-                          <Form>
-                            <Item floatingLabel>
+                          <ListItem>
+                            <Item floatingLabel style={{underlineColor:'transparent'}}>
                               <Label>事件名称</Label>
                               <Input 
                                 value={this.state._name}
                                 onChangeText={(text) => {this.setState({_name:text})}}
                               />
                             </Item>
-                          </Form>
+                          </ListItem>
+                          <ListItem>
+                            <Text>选择分类:</Text>
+                            <Picker
+                              note
+                              mode="dropdown"
+                              style={{ width: 120 }}
+                              selectedValue={this.state._type}
+                              onValueChange={this.onTypeValueChange.bind(this)}
+                            >
+                              {Object.keys(this.state.Type).map((obj, idx) => (
+                                <Picker.Item style={{justifyContent:'center'}} label={this.state.Type[obj].name} value={this.state.Type[obj].type} />       
+                              ))}
+                            </Picker>
+                          </ListItem>
+                          <ListItem>
+                            <Icon name='heart' style={{ color: '#ED4A6A' }}/>
+                            <Text> 幸福指数：</Text>
+                            <Picker
+                              note
+                              mode="dropdown"
+                              style={{ width: 120 }}
+                              selectedValue={this.state._val}
+                              onValueChange={this.onValValueChange.bind(this)}
+                            >
+                              <Picker.Item label="0" value={parseInt("0")} />
+                              <Picker.Item label="1" value={parseInt("1")} />
+                              <Picker.Item label="2" value={parseInt("2")} />
+                              <Picker.Item label="3" value={parseInt("3")} />
+                              <Picker.Item label="4" value={parseInt("4")} />
+                              <Picker.Item label="5" value={parseInt("5")} />
+                            </Picker>
+                          </ListItem>
                           <ListItem>
                             <CheckBox checked={this.state._done} onPress={
                               ()=>this.setState({_done:!this.state._done})
@@ -567,7 +677,9 @@ export class HomeScreen extends Component {
                               item[1]=totHappy;
                               //存储数据
                               this.setState({HappyThings:this.state.HappyThings});
-                              this.setState({newVisible:-1});
+                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                this.setState({newVisible:-1})
+                              );
                             }}>
                               <Icon name='checkmark'/>
                             </Button>
@@ -741,8 +853,11 @@ export class HomeScreen extends Component {
                     ]);
                     this.setState({HappyThings :list});
                   }
+                  setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                    this.setState({modalVisible:false})
+                  );
                   //存储数据
-                  this.setState({modalVisible:false});
+                  
                 }}>
                   <Icon name='checkmark'/>
                 </Button>
