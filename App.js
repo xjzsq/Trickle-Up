@@ -11,6 +11,7 @@ import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card'//卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
+import setting from './setting.js';
 
 const setStorage = async (key,value) => {
   try {
