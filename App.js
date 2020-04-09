@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, AsyncStorage, DatePickerAndroid } from 'react-native';
 import { Container, Text, View, DeckSwiper, Header, Title, Content, Footer, ListItem, List, Form, Label, Item,
    FooterTab, Thumbnail, Button, Left, Right, Body, Icon, Card, CardItem, Fab, DatePicker, CheckBox, Input, Picker,
     } from 'native-base';
@@ -113,7 +113,6 @@ export class HomeScreen extends Component {
     this.setDate = this.setDate.bind(this);
     this.state={
       index : 0,
-      totalHappy: 46,
       modalVisible: false,
       setVisible: -1,
       newVisible: -1,
@@ -124,6 +123,7 @@ export class HomeScreen extends Component {
       _type : '',
       _val : 0,
       _done : false,
+      _default : false,
       chosenDate: new Date(),
       HappyThings:[
         [
@@ -322,6 +322,16 @@ export class HomeScreen extends Component {
       if(x!==null)this.setState({defaultList : JSON.parse(x)});
     });
   }
+  componentWillMount(){
+    this.updateTotHappy();
+  }
+  updateTotHappy(){
+    let tot = 0;
+    for(let i = 0; i < this.state.HappyThings.length; i++){
+      tot += this.state.HappyThings[i][1];
+    }
+    this.setState({totalHappy:tot});
+  }
   setDate(newDate) {
     this.setState({ chosenDate: newDate });
   }
@@ -371,7 +381,20 @@ export class HomeScreen extends Component {
               <Card>
                 <CardItem header>
                   <Left>
-                    <Button info iconLeft onPress={() => {}}>
+                    <Button info iconLeft onPress={async() => {
+                      try {
+                        const {action, year, month, day} = await DatePickerAndroid.open({
+                          // 要设置默认值为今天的话，使用`new Date()`即可。
+                          // 下面显示的会是2020年5月25日。月份是从0开始算的。
+                          date: new Date(),
+                        });
+                        if (action !== DatePickerAndroid.dismissedAction) {
+                          alert(month+1);// 这里开始可以处理用户选好的年月日三个参数：year, month (0-11), day
+                        }
+                      } catch ({code, message}) {
+                        console.warn('Cannot open date picker', message);
+                      }
+                    }}>
                         <Icon name='calendar'/>
                         {this.getDateENFormat(item[0])}
                     </Button>
@@ -418,14 +441,16 @@ export class HomeScreen extends Component {
                     return(
                     <CardItem style={styles.checkList}>
                       <CheckBox checked={items.done} onPress={
-                        async ()=>{items.done=!items.done;
+                        ()=>{
+                          items.done=!items.done;
                           let totHappy = 0;
                           for(let i = 0; i < item[2].length;i++){
                             if(item[2][i].done)totHappy+=item[2][i].val;
                           }
                           item[1]=totHappy;
                           this.setState({HappyThings:this.state.HappyThings});
-                          await setStorage('HappyThings',this.state.HappyThings).then((x)=>{alert("操你妈，保存成功了");});
+                          setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
+                          this.updateTotHappy();
                         }
                       }/>
                       <Left style={{paddingLeft: 20}}>
@@ -527,6 +552,23 @@ export class HomeScreen extends Component {
                                 <Text>我已经通过这个获得幸福啦~</Text>
                               </Body>
                             </ListItem>
+                            <ListItem>
+                              <Button iconLeft danger onPress={()=>{
+                                //删除询问 TODO
+                                for(let i = 0; i < this.state.HappyThings[index][2].length; i++){
+                                  if(this.state.HappyThings[index][2][i].name===items.name){
+                                    this.setState({HappyThings:this.state.HappyThings});
+                                    //存储数据
+                                    setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                      this.setState({setVisible:-1})
+                                    );
+                                  }
+                                }
+                              }}>
+                                <Icon name='trash'/>
+                                <Text>删除本事件</Text>
+                              </Button>
+                            </ListItem>
                             <View>
                               <Button success onPress={()=>{
                                 let i = 0,fix=0;
@@ -534,7 +576,7 @@ export class HomeScreen extends Component {
                                   if(this.state.HappyThings[index][2][i].name===items.name){
                                     fix=i;
                                   } else if(this.state._name===this.state.HappyThings[index][2][i].name){
-                                    alert("名称重复，你在这一天已经记录过一次这个幸福了...");
+                                    alert("名称重复，你在这一天已经记录过一次这件幸福的事情了...");
                                   }
                                   i++;
                                 }
@@ -549,8 +591,10 @@ export class HomeScreen extends Component {
                                 item[1]=totHappy;
                                 this.setState({HappyThings:this.state.HappyThings});
                                 //存储数据
-                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
-                                  this.setState({setVisible:-1})
+                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
+                                  this.updateTotHappy();
+                                  this.setState({setVisible:-1});
+                                }
                                 );
                               }}>
                                 <Icon name='checkmark'/>
@@ -573,6 +617,7 @@ export class HomeScreen extends Component {
                         this.setState({_type:'home'}),
                         this.setState({_val:0}),
                         this.setState({_done:false}),
+                        this.setState({_default:false}),
                         this.setState({newVisible:index})
                       }}>
                         <Icon name="arrow-forward" />
@@ -650,6 +695,14 @@ export class HomeScreen extends Component {
                             </Picker>
                           </ListItem>
                           <ListItem>
+                            <CheckBox checked={this.state._default} onPress={
+                              ()=>this.setState({_default:!this.state._default})
+                            }/>
+                            <Body>
+                              <Text>加入默认列表中</Text>
+                            </Body>
+                          </ListItem>
+                          <ListItem>
                             <CheckBox checked={this.state._done} onPress={
                               ()=>this.setState({_done:!this.state._done})
                             }/>
@@ -667,6 +720,32 @@ export class HomeScreen extends Component {
                                 }
                                 i++;
                               }
+                              if(this.state._name===''){
+                                alert("是什么秘密的事情幸福的让你说不出来呀？写下来嘛~");
+                                return;
+                              }
+                              i=0;
+                              if(this.state._default){
+                                for(let i=0;i<this.state.defaultList.length;i++){
+                                  if(this.state._name===this.state.defaultList[i].name){
+                                    if(this.state._type!==this.state.defaultList[i].type 
+                                      || this.state._val!==this.state.defaultList[i].val){
+                                      alert("默认列表中已经有这件让你幸福的事情了~");
+                                      return;
+                                    }
+                                    break;
+                                  }
+                                }
+                                this.state.defaultList.push(
+                                {
+                                  name:this.state._name,
+                                  type:this.state._type,
+                                  val:this.state._val,
+                                  done:false,
+                                });
+                                this.setState({defaultList:this.state.defaultList});
+                                setStorage('defaultList',JSON.stringify(this.state.defaultList));
+                              }
                               item[2].push(
                               {
                                 name:this.state._name,
@@ -681,8 +760,10 @@ export class HomeScreen extends Component {
                               item[1]=totHappy;
                               //存储数据
                               this.setState({HappyThings:this.state.HappyThings});
-                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
-                                this.setState({newVisible:-1})
+                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
+                                this.updateTotHappy();
+                                this.setState({newVisible:-1});
+                              }
                               );
                             }}>
                               <Icon name='checkmark'/>
