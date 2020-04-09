@@ -12,6 +12,8 @@ import FlipCard from 'react-native-flip-card'//卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
+import {captureRef} from "react-native-view-shot";
+import Share from 'react-native-share';
 
 const setStorage = async (key,value) => {
   try {
@@ -111,6 +113,7 @@ const Content_HEIGHT = SLIDER_HEIGHT - 180;
 export class HomeScreen extends Component {
   constructor(props) {
     super(props);
+    this.refs = {};
     this._renderItem = this._renderItem.bind(this);
     this.setDate = this.setDate.bind(this);
     this.state={
@@ -366,7 +369,7 @@ export class HomeScreen extends Component {
   _renderItem({ item, index }) {
     let tot = 0;
     return (
-      <View>
+      <View  ref = "source">
         <ScrollView>
           <FlipCard 
             style={styles.card}
@@ -379,7 +382,7 @@ export class HomeScreen extends Component {
             onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
           >
             {/* Face Side */}
-            <View style={styles.face}>
+            <View style={styles.face} res={shot=>this.refs[`${index}`] = shot}>
               <Card>
                 <CardItem header>
                   <Left>
@@ -436,6 +439,19 @@ export class HomeScreen extends Component {
                   <Button primary onPress={() => {this.setState({nowBack:index})}}>
                     <Icon name='settings' />
                   </Button>
+                  <Button onPress={() =>{
+              captureRef(this.refs[`${index}`],{
+                format: "jpg",
+                quality: 0.8,
+                result:"data-uri"
+              }).then(res => {
+                Share.open({
+                  url: res
+                })
+              })
+            }} >
+              <Icon name='share' />
+            </Button>
                 </CardItem>
               </Card>
             </View>
@@ -855,7 +871,7 @@ export class HomeScreen extends Component {
             <Button onPress={() => {this.setState({modalVisible:true})}} style={{ backgroundColor: '#ED4A6A' }}>
               <Icon name="add" />
             </Button>
-            <Button disabled style={{ backgroundColor: '#3B5998' }}>
+            <Button style={{ backgroundColor: '#3B5998' }} >
               <Icon name="share" />
             </Button>
           </Fab>
