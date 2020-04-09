@@ -325,14 +325,16 @@ export class HomeScreen extends Component {
   setDate(newDate) {
     this.setState({ chosenDate: newDate });
   }
-  getDateCNFormat(newDate) {
+  getDateCNFormat(_newDate) {
+    let newDate = new Date(_newDate);
     return (
       <Text>
         {newDate.getFullYear()}年{newDate.getMonth()+1}月{newDate.getDate()}日
       </Text>
     );
   }
-  getDateENFormat(newDate) {
+  getDateENFormat(_newDate) {
+    let newDate = new Date(_newDate)
     return (
       <Text>
         {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
@@ -416,13 +418,15 @@ export class HomeScreen extends Component {
                     return(
                     <CardItem style={styles.checkList}>
                       <CheckBox checked={items.done} onPress={
-                        ()=>{items.done=!items.done;
+                        async ()=>{items.done=!items.done;
                           let totHappy = 0;
                           for(let i = 0; i < item[2].length;i++){
                             if(item[2][i].done)totHappy+=item[2][i].val;
                           }
                           item[1]=totHappy;
-                          this.setState({HappyThings:this.state.HappyThings});}
+                          this.setState({HappyThings:this.state.HappyThings});
+                          await setStorage('HappyThings',this.state.HappyThings).then((x)=>{alert("操你妈，保存成功了");});
+                        }
                       }/>
                       <Left style={{paddingLeft: 20}}>
                         <Text>{items.name}</Text>
@@ -701,7 +705,8 @@ export class HomeScreen extends Component {
       </View>
     );
   }
-  dateEqual(date1,date2){
+  dateEqual(_date1,_date2){
+    let date1 = new Date(_date1),date2 = new Date(_date2);
     return date1.getDate()===date2.getDate() 
     && date1.getMonth() === date2.getMonth()
     && date1.getFullYear() === date2.getFullYear();
@@ -831,7 +836,7 @@ export class HomeScreen extends Component {
                     if(this.dateEqual(this.state.chosenDate,this.state.HappyThings[i][0])){
                       alert('这一天已经有记录幸福的卡片了呢~');
                       return;
-                    } else if(this.state.chosenDate>this.state.HappyThings[i][0]){
+                    } else if(this.state.chosenDate>new Date(this.state.HappyThings[i][0])){
                       break;
                     }
                     i++;
@@ -844,7 +849,6 @@ export class HomeScreen extends Component {
                       this.state.defaultList,
                     ]);
                     this.setState({HappyThings :list});
-                    //this.setState({HappyThings:})
                   } else {
                     list.splice(i,0,[
                       this.state.chosenDate,
@@ -853,11 +857,10 @@ export class HomeScreen extends Component {
                     ]);
                     this.setState({HappyThings :list});
                   }
+                  //存储数据
                   setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                     this.setState({modalVisible:false})
                   );
-                  //存储数据
-                  
                 }}>
                   <Icon name='checkmark'/>
                 </Button>
