@@ -180,15 +180,16 @@ export default class wishlist extends Component {
             </Button>
           </Right>
         </Header>
-        {/*
-        <ImageBackground source={this.state.BG == null ? require('./o2.jpg') : this.state.BG} style={{
-          height: "100%",
-          width: "100%",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "white",      
-        }} />
-      */}
+        
+        <ImageBackground source={this.state.BG == null ? require('./o2.jpg') : this.state.BG}
+         style={{
+           width: "100%",
+           height: "100%",
+         }}
+         imageStyle={{
+          opacity: 0.3   
+        }}>
+     
         <View style={{flex: 1 , width: "100%", zIndex: 1}}>
           <DraggableFlatList
             activationDistance={15}
@@ -324,6 +325,7 @@ export default class wishlist extends Component {
             </Container>
           </View>
         </Modal>
+        </ImageBackground>
       </Container>
     );
   }
