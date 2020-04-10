@@ -136,7 +136,6 @@ export default class wishlist extends Component {
 
   saveData = () => {
     Storage.setStorage('wishItem', JSON.stringify(this.state.data));
-    console.log(this.state.data);
     Storage.setStorage('totalItem', JSON.stringify(this.state.totalItem.toString));
   };
   render() {
@@ -174,6 +173,7 @@ export default class wishlist extends Component {
                       height: image.height,
                     },
                 });
+                Storage.setStorage('wishBG', this.state.BG);
               });
             }}>
               <Icon name="settings"/>
@@ -190,7 +190,7 @@ export default class wishlist extends Component {
           opacity: 0.3   
         }}>
      
-        <View style={{flex: 1 , width: "100%", zIndex: 1}}>
+        <View style={{flex: 1 , width: "100%", zIndex: 1,}}>
           <DraggableFlatList
             activationDistance={15}
             data={this.state.data}
@@ -202,6 +202,7 @@ export default class wishlist extends Component {
             }}
           />
         </View>
+        </ImageBackground>
         <ActionButton onPress={this.toggleModal} />
         <Modal
           isVisible={this.state.isModalVisible}
@@ -228,7 +229,7 @@ export default class wishlist extends Component {
               <Content>
                 <Form>
                   <Item floatingLabel style={{padding: 5}}>
-                    <Label>想买点啥呢</Label>
+                    <Label>想要点啥呢</Label>
                     <Input
                       onChangeText={text => {
                         this.setState({
@@ -303,6 +304,7 @@ export default class wishlist extends Component {
                             data: this.state.data.concat(moTemp),
                           });
                           this.saveData();
+                          alert(moTemp.key);
                           this.setState({
                             modalTemp: {
                               name: '',
@@ -325,7 +327,7 @@ export default class wishlist extends Component {
             </Container>
           </View>
         </Modal>
-        </ImageBackground>
+        
       </Container>
     );
   }
