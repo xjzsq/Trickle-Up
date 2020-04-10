@@ -119,35 +119,35 @@ export default class wishlist extends Component {
           </Text>
         </View>
         <View>
-          <TouchableOpacity onLongPress={drag} activeOpacity={0.85}>
-            <Container style={{height: 120, padding: 15}}>
+          <TouchableOpacity onLongPress={drag} activeOpacity={0.9}>
+            <Container style={{height: 130, padding: 15}}>
               <Content>
                 <Card>
-                <CardItem>
-                  <Left>
-                    <Thumbnail
-                      source={this.state.data[index].imgSource}
-                      style={{height: 60}}
-                    />
-                    <Body>
-                      <Text>{this.state.data[index].name}</Text>
-                      <Text note>￥{this.state.data[index].price}</Text>
-                    </Body>
-                  </Left>
-                  <Right>
-                    <CheckBox
-                      onChange={() => {
-                        const upd = this.state.data.filter(d => d !== item);
-                        LayoutAnimation.configureNext(
-                          LayoutAnimation.Presets.spring,
-                        );
-                        this.state.totalItem--;
-                        this.setState({data: upd});
-                        this.saveData();
-                      }}
-                    />
-                  </Right>
-                </CardItem>
+                  <CardItem>
+                    <Left>
+                      <Thumbnail
+                        source={this.state.data[index].imgSource}
+                        style={{height: 60}}
+                      />
+                      <Body>
+                        <Text>{this.state.data[index].name}</Text>
+                        <Text note>￥{this.state.data[index].price}</Text>
+                      </Body>
+                    </Left>
+                    <Right>
+                      <CheckBox
+                        onChange={() => {
+                          const upd = this.state.data.filter(d => d !== item);
+                          LayoutAnimation.configureNext(
+                            LayoutAnimation.Presets.spring,
+                          );
+                          this.state.totalItem--;
+                          this.setState({data: upd});
+                          this.saveData();
+                        }}
+                      />
+                    </Right>
+                  </CardItem>
                 </Card>
               </Content>
             </Container>
@@ -216,10 +216,8 @@ export default class wishlist extends Component {
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                <Item style={styles.row}>
-                    <Image
-                      source={this.state.modalTemp.imgSource}
-                    />
+                  <Item style={styles.row}>
+                    <Image source={this.state.modalTemp.imgSource} />
                   </Item>
                   <Item floatingLabel>
                     <Label>Name</Label>
@@ -250,7 +248,7 @@ export default class wishlist extends Component {
                     />
                   </Item>
                   <Button
-                  style={{padding: 25}}
+                    style={{padding: 25}}
                     onPress={() => {
                       ImagePicker.openPicker({
                         width: 100,
@@ -274,28 +272,37 @@ export default class wishlist extends Component {
                     }}>
                     <Text>选择图片</Text>
                   </Button>
-                  
+
                   <View style={styles.row}>
-                  <Button
-                    onPress={() => {
-                      var moTemp = this.state.modalTemp;
-                      moTemp.key = ++this.state.totalItem;
-                      this.setState({
-                        data: this.state.data.concat(moTemp),
-                      });
-                      this.saveData();
-                      this.setState({
-                        modalTemp: {
-                          name: '',
-                          key: 0,
-                          price: 0,
-                          imgSource: null,
-                        },
-                        isModalVisible: !this.state.isModalVisible,
-                      });
-                    }}>
-                    <Text>完成</Text>
-                  </Button>
+                    <Button
+                      onPress={() => {
+                        var moTemp = this.state.modalTemp;
+                        if (
+                          moTemp.name.length == 0 ||
+                          moTemp.price.length == 0
+                        ) {
+                          alert('想要的东西可不能为空哦');
+                        } else {
+                          if (moTemp.imgSource == null)
+                            moTemp.imgSource = require('./o1.jpg');
+                          moTemp.key = ++this.state.totalItem;
+                          this.setState({
+                            data: this.state.data.concat(moTemp),
+                          });
+                          this.saveData();
+                          this.setState({
+                            modalTemp: {
+                              name: '',
+                              key: 0,
+                              price: 0,
+                              imgSource: null,
+                            },
+                            isModalVisible: !this.state.isModalVisible,
+                          });
+                        }
+                      }}>
+                      <Text>完成</Text>
+                    </Button>
                     <Button onPress={this.toggleModal}>
                       <Text>取消</Text>
                     </Button>
