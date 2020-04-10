@@ -60,14 +60,13 @@ export default class setting extends Component {
         });
     }
     componentDidMount() {
-        this.listener = DeviceEventEmitter.addListener('updateDefaultData', () => {
+        DeviceEventEmitter.addListener('updateDefaultData', () => {
             Storage.getStorage('defaultList').then((x) => {
                 this.setState({ defaultList: JSON.parse(x) });
             });
         });
     }
     componentWillMount() {
-
         Storage.getStorage('Type').then((x) => {
             if (x !== null) this.setState({ Type: JSON.parse(x) });
         });
@@ -75,7 +74,7 @@ export default class setting extends Component {
         Storage.getStorage('defaultList').then((x) => {
             if (x !== null) this.setState({ defaultList: JSON.parse(x) });
         });
-        this.listener.remove();
+        DeviceEventEmitter.removeAllListeners();
     }
 
     render() {
@@ -160,7 +159,7 @@ export default class setting extends Component {
               </Card>
             </View>
             {/* Back Side */}
-            <View>
+            <View style={styles.face}>
               <Card>
                 <CardItem header>
                 </CardItem>
@@ -305,6 +304,9 @@ export default class setting extends Component {
 }
 
 const styles = StyleSheet.create({
+    face : {
+      width : ITEM_WIDTH, 
+    },
     checkList: {},
     newDateModal: {
         padding: 20,
