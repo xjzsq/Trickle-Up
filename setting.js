@@ -1,33 +1,33 @@
 import React, { Component } from 'react';
 import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
 import {
-    Container,
-    Text,
-    View,
-    DeckSwiper,
-    Header,
-    Title,
-    Content,
-    Footer,
-    ListItem,
-    List,
-    Form,
-    Label,
-    Item,
-    FooterTab,
-    Thumbnail,
-    Button,
-    Left,
-    Right,
-    Body,
-    Icon,
-    Card,
-    CardItem,
-    Fab,
-    DatePicker,
-    CheckBox,
-    Input,
-    Picker,
+  Container,
+  Text,
+  View,
+  DeckSwiper,
+  Header,
+  Title,
+  Content,
+  Footer,
+  ListItem,
+  List,
+  Form,
+  Label,
+  Item,
+  FooterTab,
+  Thumbnail,
+  Button,
+  Left,
+  Right,
+  Body,
+  Icon,
+  Card,
+  CardItem,
+  Fab,
+  DatePicker,
+  CheckBox,
+  Input,
+  Picker,
 } from 'native-base';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card' //卡片翻转效果
@@ -41,46 +41,46 @@ const ITEM_HEIGHT = Math.round(ITEM_WIDTH * 3 / 4);
 const Content_HEIGHT = SLIDER_HEIGHT - 180;
 
 export default class setting extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            _name: '',
-            _default: '',
-            nowBack: false,
-            typeModalVisible: false,
-            Type: [],
-            defaultList: [],
-        }
-        Storage.getStorage('Type').then((x) => {
-            if (x !== null) this.setState({ Type: JSON.parse(x) });
-        });
-
-        Storage.getStorage('defaultList').then((x) => {
-            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
-        });
+  constructor(props) {
+    super(props);
+    this.state = {
+      _name: '',
+      _default: '',
+      nowBack: false,
+      typeModalVisible: false,
+      Type: [],
+      defaultList: [],
     }
-    componentDidMount() {
-        DeviceEventEmitter.addListener('updateDefaultData', () => {
-            Storage.getStorage('defaultList').then((x) => {
-                this.setState({ defaultList: JSON.parse(x) });
-            });
-        });
-    }
-    componentWillMount() {
-        Storage.getStorage('Type').then((x) => {
-            if (x !== null) this.setState({ Type: JSON.parse(x) });
-        });
+    Storage.getStorage('Type').then((x) => {
+      if (x !== null) this.setState({ Type: JSON.parse(x) });
+    });
 
-        Storage.getStorage('defaultList').then((x) => {
-            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
-        });
-        DeviceEventEmitter.removeAllListeners();
-    }
+    Storage.getStorage('defaultList').then((x) => {
+      if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+    });
+  }
+  componentDidMount() {
+    DeviceEventEmitter.addListener('updateDefaultData', () => {
+      Storage.getStorage('defaultList').then((x) => {
+        this.setState({ defaultList: JSON.parse(x) });
+      });
+    });
+  }
+  componentWillMount() {
+    Storage.getStorage('Type').then((x) => {
+      if (x !== null) this.setState({ Type: JSON.parse(x) });
+    });
 
-    render() {
-        const { navigation } = this.props;
-        return (
-            <Container>
+    Storage.getStorage('defaultList').then((x) => {
+      if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+    });
+    DeviceEventEmitter.removeAllListeners();
+  }
+
+  render() {
+    const { navigation } = this.props;
+    return (
+      <Container>
         <Header
          style={{ backgroundColor: "#00bfff" }}
          androidStatusBarColor="#00bfff"
@@ -299,38 +299,41 @@ export default class setting extends Component {
         </ScrollView>
         </View>
       </Container>
-        );
-    }
+    );
+  }
 }
 
 const styles = StyleSheet.create({
-    face : {
-      width : ITEM_WIDTH, 
-    },
-    checkList: {},
-    newDateModal: {
-        padding: 20,
-        backgroundColor: 'white',
-    },
-    carouselContainer: {
-        marginTop: 10
-    },
-    itemContainer: {
-        width: ITEM_WIDTH,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    itemDate: {
-        alignItems: 'flex-start',
-        flex: 1,
-    },
-    itemContain: {
-        height: Content_HEIGHT,
-        alignItems: 'flex-end',
-    },
-    itemButtom: {
-        alignItems: 'flex-end',
-        justifyContent: 'center',
-        height: 50,
-    },
+  card: {
+    
+  }
+  face: {
+    width: ITEM_WIDTH,
+  },
+  checkList: {},
+  newDateModal: {
+    padding: 20,
+    backgroundColor: 'white',
+  },
+  carouselContainer: {
+    marginTop: 10
+  },
+  itemContainer: {
+    width: ITEM_WIDTH,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  itemDate: {
+    alignItems: 'flex-start',
+    flex: 1,
+  },
+  itemContain: {
+    height: Content_HEIGHT,
+    alignItems: 'flex-end',
+  },
+  itemButtom: {
+    alignItems: 'flex-end',
+    justifyContent: 'center',
+    height: 50,
+  },
 });
