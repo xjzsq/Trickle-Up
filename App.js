@@ -363,7 +363,6 @@ export class HomeScreen extends Component {
     DeviceEventEmitter.addListener('updatedefaultData', (ppp = null) => {
       Storage.getStorage('defaultList').then((x) => {
         this.setState({ defaultList: JSON.parse(x) });
-        alert("ok");
       });
     });
   }
