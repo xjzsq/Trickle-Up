@@ -46,8 +46,11 @@ export default class setting extends Component {
     this.state = {
       _name: '',
       _default: '',
+      _type:'',
+      _val:'',
       nowBack: false,
       typeModalVisible: false,
+      defaultModalVisible: false,
       Type: [],
       defaultList: [],
     }
@@ -76,7 +79,16 @@ export default class setting extends Component {
     });
     DeviceEventEmitter.removeAllListeners();
   }
-
+  onTypeValueChange(value: string) {
+    this.setState({
+      _type: value
+    });
+  }
+  onValValueChange(value: string) {
+    this.setState({
+      _val: parseInt(value)
+    });
+  }
   render() {
     const { navigation } = this.props;
     return (
@@ -132,36 +144,145 @@ export default class setting extends Component {
                             <Text>{items.name}({this.state.Type[items.type].name})</Text>
                           </Body>
                         </Left>
-                        <Body>
-                        </Body>
-                        <Right style={{width:30}}>
                           <Icon name="heart" style={{ color: '#ED4A6A' }} />
                           <Text>{items.val}</Text>
                           <Button large info style={{height:20,borderColor:'transparent'}}
                           bordered onPress={()=>{
                             //删除函数
                             this.state.defaultList.splice(index,1);
-                            this.setState({Type:this.state.defaultList});
-                            Storage.setStorage('Type',JSON.stringify(this.state.Type));
+                            this.setState({defaultList:this.state.defaultList});
+                            Storage.setStorage('defaultList',JSON.stringify(this.state.defaultList));
                             DeviceEventEmitter.emit('updatedefaultData');
                           }}>
                             <Icon name="close" />
                           </Button>
-                        </Right>
                       </CardItem>);
                   })}
-                  <Text>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
+                  <Text style={{padding : 15}}>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
                   <CardItem>
-
+                    <Left style={{paddingLeft: 9}}>
+                      <Text>又有能你每天都感到幸福的事情了吗?</Text>
+                    </Left>
+                    <Right>
+                      <Button large info style={{height:20,borderColor:'transparent'}}
+                      bordered onPress={()=>{
+                        this.setState({_name:''}),
+                        this.setState({_type:'home'}),
+                        this.setState({_val:0}),
+                        this.setState({defaultModalVisible:!this.state.defaultModalVisible})
+                      }}>
+                        <Icon name="add" />
+                      </Button>
+                    </Right>
+                    <Modal
+                      isVisible={this.state.defaultModalVisible}
+                      onBackdropPress={()=>{this.setState({defaultModalVisible:!this.state.defaultModalVisible})}}
+                      backdropOpacity={0.0}
+                      style={{
+                        width: Dimensions.get('window').width ,
+                        height: Dimensions.get('window').height * 0.5,
+                        alignContent: 'center',
+                        padding: 30,
+                      }}
+                    >
+                      <View>
+                        <Header style={{ backgroundColor: '#00bfff' }}
+                          androidStatusBarColor="#00bfff"
+                        >
+                          <Left>
+                            <Button transparent onPress={() => {
+                              this.setState({ defaultModalVisible : !this.state.defaultModalVisible })
+                            }}
+                            >
+                              <Icon name='arrow-back' />
+                            </Button>
+                          </Left>
+                          <Body>
+                            <Title>发现幸福</Title>
+                          </Body>
+                          <Right>
+                          </Right>
+                        </Header>
+                        <View style={styles.newDateModal}>
+                          <Text style={{fontSize:20,color: 'gray'}}>
+                            又发现了每天都能你幸福的事情？写下来别弄丢她！
+                          </Text>
+                          <ListItem>
+                            <Item floatingLabel style={{underlineColor:'transparent'}}>
+                              <Label>什么事情啊？</Label>
+                              <Input 
+                                value={this.state._name}
+                                onChangeText={(text) => {this.setState({_name:text})}}
+                              />
+                            </Item>
+                          </ListItem>
+                          <ListItem>
+                            <Text>选择分类:</Text>
+                            <Picker
+                              note
+                              mode="dropdown"
+                              style={{ width: 120 }}
+                              selectedValue={this.state._type}
+                              onValueChange={this.onTypeValueChange.bind(this)}
+                            >
+                              {Object.keys(this.state.Type).map((obj, idx) => (
+                                <Picker.Item style={{justifyContent:'center'}} label={this.state.Type[obj].name} value={this.state.Type[obj].type} />       
+                              ))}
+                            </Picker>
+                          </ListItem>
+                          <ListItem>
+                            <Icon name='heart' style={{ color: '#ED4A6A' }}/>
+                            <Text> 幸福指数：</Text>
+                            <Picker
+                              note
+                              mode="dropdown"
+                              style={{ width: 120 }}
+                              selectedValue={this.state._val}
+                              onValueChange={this.onValValueChange.bind(this)}
+                            >
+                              <Picker.Item label="0" value={parseInt("0")} />
+                              <Picker.Item label="1" value={parseInt("1")} />
+                              <Picker.Item label="2" value={parseInt("2")} />
+                              <Picker.Item label="3" value={parseInt("3")} />
+                              <Picker.Item label="4" value={parseInt("4")} />
+                              <Picker.Item label="5" value={parseInt("5")} />
+                            </Picker>
+                          </ListItem>
+                          <View>
+                            <Button success onPress={()=>{
+                              for(let i = 0; i < this.state.defaultModalVisible.length; i++){
+                                if(this.state._name===this.state.defaultModalVisible[i].name){
+                                  alert("默认列表中已经有这件让你幸福的事情了~");
+                                  return;
+                                }
+                              }
+                              if(this.state._name===''){
+                                alert("是什么秘密的事情幸福的让你说不出来呀？写下来嘛~");
+                                return;
+                              }
+                              this.state.defaultList.push(
+                                {
+                                  name:this.state._name,
+                                  type:this.state._type,
+                                  val:this.state._val,
+                                }
+                              );
+                              //存储数据
+                              this.setState({defaultList:this.state.defaultList});
+                              Storage.setStorage('defaultList', JSON.stringify(this.state.defaultList)).then(()=>{
+                                this.setState({defaultModalVisible:!this.state.defaultModalVisible});
+                                DeviceEventEmitter.emit('updatedefaultData');
+                              }
+                              );
+                            }}>
+                              <Icon name='checkmark' style={{alignItems:'center'}}/>
+                            </Button>
+                          </View>
+                        </View>
+                      </View>
+                    </Modal>
                   </CardItem>
                 </View>
-                {/*}
-                <CardItem footer style={styles.itemButtom}>
-                  <Button primary onPress={() => {this.setState({nowBack:true})}}>
-                    <Icon name='settings' />
-                  </Button>
-                </CardItem>
-              */}
               </Card>
             </View>
             {/* Back Side */}
@@ -303,11 +424,6 @@ export default class setting extends Component {
                     </Modal>
                   </CardItem>
                 </View>
-                <CardItem footer style={styles.itemButtom}>
-                  <Button success onPress={() => {this.setState({nowBack:!this.state.nowBack})}}>
-                    <Icon name='checkmark' />
-                  </Button>
-                </CardItem>
               </Card>
             </View>
           </FlipCard>
