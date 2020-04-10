@@ -38,6 +38,7 @@ import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import {SwipeRow} from 'react-native-swipe-list-view';
 import Storage from './storage.js';
+import RnHash, {CONSTANTS} from 'react-native-hash';
 
 /*种草机页面 */
 
@@ -46,10 +47,9 @@ export default class wishlist extends Component {
     super(props);
     this.state = {
       isModalVisible: false,
-      totalItem: 0,
       modalTemp: {
         name: '',
-        key: 0,
+        key: '',
         price: 0,
         imgSource: null,
       },
@@ -69,11 +69,11 @@ export default class wishlist extends Component {
         // },
       ],
     };
-    Storage.getStorage('wishItem').then((x) =>{
-      if(x!= null) this.setState({data: JSON.parse(x)});
+    Storage.getStorage('wishItem').then(x => {
+      if (x != null) this.setState({data: JSON.parse(x)});
     });
-    Storage.getStorage('totalItem').then((x) =>{
-      if(x!= null) this.setState({totalItem: parseInt(JSON.parse(x))});
+    Storage.getStorage('wishBG').then(x => {
+      if (x != null) this.setState({BG: JSON.parse(x)});
     });
   }
 
@@ -85,7 +85,7 @@ export default class wishlist extends Component {
             style={styles.backTextWhite}
             onPress={() => {
               const updd = this.state.data.filter(d => d !== item);
-              Storage.setStorage('wishItem', JSON.stringify(updd)).then(()=>{
+              Storage.setStorage('wishItem', JSON.stringify(updd)).then(() => {
                 LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
                 this.setState({data: updd});
               });
@@ -111,13 +111,17 @@ export default class wishlist extends Component {
                     </Left>
                     <Right>
                       <CheckBox
-                        onChange={async () => {
-                          const upd = this.state.data.filter(d => d !== item);
-                          LayoutAnimation.configureNext(
-                            LayoutAnimation.Presets.spring,
-                          );
-                          this.setState({data: upd});
-                          await this.saveData();
+                        onChange={() => {
+                          const updd = this.state.data.filter(d => d !== item);
+                          Storage.setStorage(
+                            'wishItem',
+                            JSON.stringify(updd),
+                          ).then(() => {
+                            LayoutAnimation.configureNext(
+                              LayoutAnimation.Presets.spring,
+                            );
+                            this.setState({data: updd});
+                          });
                         }}
                       />
                     </Right>
@@ -136,16 +140,12 @@ export default class wishlist extends Component {
 
   saveData = () => {
     Storage.setStorage('wishItem', JSON.stringify(this.state.data));
-    console.log(this.state.data);
-    Storage.setStorage('totalItem', JSON.stringify(this.state.totalItem.toString));
   };
   render() {
     const {navigation} = this.props;
 
     return (
-      
       <Container>
-        
         <Header
           style={{backgroundColor: '#00bfff'}}
           androidStatusBarColor="#00bfff"
@@ -159,49 +159,53 @@ export default class wishlist extends Component {
             <Title style={{alignContent: 'center', fontSize: 20}}>种草机</Title>
           </Body>
           <Right>
-            <Button transparent onPress={()=>{
-              ImagePicker.openPicker({
-                width: Dimensions.get('window').width,
-                height: Dimensions.get('window').height,
-                cropping: true,
-                includeBase64: true,
-                includeExif: true,
-              }).then(image => {
-                this.setState({
+            <Button
+              transparent
+              onPress={() => {
+                ImagePicker.openPicker({
+                  width: Dimensions.get('window').width,
+                  height: Dimensions.get('window').height,
+                  cropping: true,
+                  includeBase64: true,
+                  includeExif: true,
+                }).then(image => {
+                  this.setState({
                     BG: {
                       uri: `data:${image.mime};base64,` + image.data,
                       width: image.width,
                       height: image.height,
                     },
+                  });
+                  Storage.setStorage('wishBG', JSON.stringify(this.state.BG));
                 });
-              });
-            }}>
-              <Icon name="settings"/>
+              }}>
+              <Icon name="settings" />
             </Button>
           </Right>
         </Header>
-        
-        <ImageBackground source={this.state.BG == null ? require('./o2.jpg') : this.state.BG}
-         style={{
-           width: "100%",
-           height: "100%",
-         }}
-         imageStyle={{
-          opacity: 0.3   
-        }}>
-     
-        <View style={{flex: 1 , width: "100%", zIndex: 1}}>
-          <DraggableFlatList
-            activationDistance={15}
-            data={this.state.data}
-            renderItem={this.renderItem}
-            keyExtractor={(item, index) => `draggable-item-${item.key}`}
-            onDragEnd={({data}) => {
-              this.setState({data: data});
-              this.saveData();
-            }}
-          />
-        </View>
+
+        <ImageBackground
+          source={this.state.BG == null ? require('./o2.jpg') : this.state.BG}
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+          imageStyle={{
+            opacity: 0.3,
+          }}>
+          <View style={{flex: 1, width: '100%', zIndex: 1}}>
+            <DraggableFlatList
+              activationDistance={15}
+              data={this.state.data}
+              renderItem={this.renderItem}
+              keyExtractor={(item, index) => `draggable-item-${item.key}`}
+              onDragEnd={({data}) => {
+                this.setState({data: data});
+                this.saveData();
+              }}
+            />
+          </View>
+        </ImageBackground>
         <ActionButton onPress={this.toggleModal} />
         <Modal
           isVisible={this.state.isModalVisible}
@@ -220,15 +224,15 @@ export default class wishlist extends Component {
               alignContent: 'center',
               margin: 5,
               elevation: 1.5,
-              borderWidth:1,
-              borderStyle:'solid',
-              borderRadius:10,
+              borderWidth: 1,
+              borderStyle: 'solid',
+              borderRadius: 10,
             }}>
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
                   <Item floatingLabel style={{padding: 5}}>
-                    <Label>想买点啥呢</Label>
+                    <Label>想要点啥呢</Label>
                     <Input
                       onChangeText={text => {
                         this.setState({
@@ -298,11 +302,26 @@ export default class wishlist extends Component {
                         } else {
                           if (moTemp.imgSource == null)
                             moTemp.imgSource = require('./o1.jpg');
-                          moTemp.key = ++this.state.totalItem;
-                          this.setState({
-                            data: this.state.data.concat(moTemp),
+                          RnHash.hashString(
+                            moTemp.name,
+                            CONSTANTS.HashAlgorithms.sha256,
+                          )
+                            .then(hash => {
+                              moTemp.key = hash;
+                            })
+                            .catch(er => console.log(er));
+
+                          const xxx = this.state.data.concat(moTemp);
+                          Storage.setStorage(
+                            'wishItem',
+                            JSON.stringify(xxx),
+                          ).then(() => {
+                            LayoutAnimation.configureNext(
+                              LayoutAnimation.Presets.spring,
+                            );
+                            this.setState({data: xxx});
                           });
-                          this.saveData();
+
                           this.setState({
                             modalTemp: {
                               name: '',
@@ -325,7 +344,6 @@ export default class wishlist extends Component {
             </Container>
           </View>
         </Modal>
-        </ImageBackground>
       </Container>
     );
   }
