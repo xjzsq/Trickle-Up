@@ -122,6 +122,7 @@ export default class wishlist extends Component {
           <TouchableOpacity onLongPress={drag} activeOpacity={0.85}>
             <Container style={{height: 120, padding: 15}}>
               <Content>
+                <Card>
                 <CardItem>
                   <Left>
                     <Thumbnail
@@ -147,6 +148,7 @@ export default class wishlist extends Component {
                     />
                   </Right>
                 </CardItem>
+                </Card>
               </Content>
             </Container>
           </TouchableOpacity>
@@ -200,21 +202,21 @@ export default class wishlist extends Component {
           backdropOpacity={0.0}
           style={{
             width: Dimensions.get('window').width * 0.8,
-            height: Dimensions.get('window').height * 0.3,
+            height: Dimensions.get('window').height * 0.5,
             alignContent: 'center',
             padding: 30,
           }}>
           <View
             style={{
               width: Dimensions.get('window').width * 0.8,
-              height: Dimensions.get('window').height * 0.3,
+              height: Dimensions.get('window').height * 0.5,
               alignContent: 'center',
               padding: 30,
             }}>
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  <Item style={{width: Dimensions.get('window').width * 0.4, height: Dimensions.get('window').height * 0.1}}>
+                <Item style={styles.row}>
                     <Image
                       source={this.state.modalTemp.imgSource}
                     />
@@ -233,7 +235,7 @@ export default class wishlist extends Component {
                       }}
                     />
                   </Item>
-                  <Item floatingLabel last>
+                  <Item floatingLabel last style={{padding: 5}}>
                     <Label>Price</Label>
                     <Input
                       onChangeText={text => {
@@ -248,10 +250,11 @@ export default class wishlist extends Component {
                     />
                   </Item>
                   <Button
+                  style={{padding: 25}}
                     onPress={() => {
                       ImagePicker.openPicker({
-                        width: 300,
-                        height: 400,
+                        width: 100,
+                        height: 100,
                         cropping: true,
                         includeBase64: true,
                         includeExif: true,
@@ -271,6 +274,8 @@ export default class wishlist extends Component {
                     }}>
                     <Text>选择图片</Text>
                   </Button>
+                  
+                  <View style={styles.row}>
                   <Button
                     onPress={() => {
                       var moTemp = this.state.modalTemp;
@@ -289,8 +294,12 @@ export default class wishlist extends Component {
                         isModalVisible: !this.state.isModalVisible,
                       });
                     }}>
-                    <Text>ok</Text>
+                    <Text>完成</Text>
                   </Button>
+                    <Button onPress={this.toggleModal}>
+                      <Text>取消</Text>
+                    </Button>
+                  </View>
                 </Form>
               </Content>
             </Container>
