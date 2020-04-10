@@ -201,7 +201,7 @@ export default class wishlist extends Component {
         <Modal
           isVisible={this.state.isModalVisible}
           onBackdropPress={this.toggleModal}
-          backdropOpacity={0.0}
+          backdropOpacity={0.2}
           style={{
             width: Dimensions.get('window').width * 0.8,
             height: Dimensions.get('window').height * 0.5,
@@ -213,11 +213,11 @@ export default class wishlist extends Component {
               width: Dimensions.get('window').width * 0.8,
               height: Dimensions.get('window').height * 0.5,
               alignContent: 'center',
-              padding: 30,
+              margin: 5,
               elevation: 1.5,
-              shadowOffset: {width: 0, height: 0},
-              shadowOpacity: 1,
-              shadowRadius: 1.5,
+              borderWidth:1,
+              borderStyle:'solid',
+              borderRadius:10,
             }}>
             <Container style={{flex: 1}}>
               <Content>
