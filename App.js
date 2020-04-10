@@ -38,6 +38,7 @@ import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
 import Storage from './storage.js';
+import otaku from './otaku.js';
 import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 import {FlatList} from 'react-native-gesture-handler';
@@ -1094,6 +1095,7 @@ export default function App() {
         <DrawerNav.Screen name="主页" component={HomeScreen} />
         <DrawerNav.Screen name="种草" component={wishlist} />
         <DrawerNav.Screen name="设置" component={setting} />
+        <DrawerNav.Screen name="不幸福？" component={otaku} />
         <DrawerNav.Screen name="关于" component={AboutScreen} />
       </DrawerNav.Navigator>
     </NavigationContainer>
