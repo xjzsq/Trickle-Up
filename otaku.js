@@ -152,7 +152,7 @@ export default class otaku extends Component {
             <ListItem>
                 <Text>二次元随机萌音！</Text>
                  <Button info bordered onPress={()=>{
-                  var xxx = new Sound('baka.matrix72.top', Sound.MAIN_BUNDLE, (error) => {
+                  var xxx = new Sound('https://baka.matrix72.top/', Sound.MAIN_BUNDLE, (error) => {
                     if (error) {
                       console.log('failed to load the sound', error);
                       return;
