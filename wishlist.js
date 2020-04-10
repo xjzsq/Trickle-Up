@@ -53,6 +53,7 @@ export default class wishlist extends Component {
         price: 0,
         imgSource: null,
       },
+      BG: require('./o2.jpg'),
       data: [
         // {
         //   name: 'ryzen 3900x',
@@ -156,6 +157,14 @@ export default class wishlist extends Component {
             <Title style={{alignContent: 'center', fontSize: 20}}>种草机</Title>
           </Body>
         </Header>
+        <ImageBackground source={this.state.BG} style={{
+          height: "100%",
+          width: "100%",
+          marginBottom: 10,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "transparent"
+        }}>
         <View style={{flex: 1}}>
           <DraggableFlatList
             activationDistance={15}
@@ -291,6 +300,7 @@ export default class wishlist extends Component {
             </Container>
           </View>
         </Modal>
+        </ImageBackground>
       </Container>
     );
   }
