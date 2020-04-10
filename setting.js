@@ -177,7 +177,7 @@ export default class setting extends Component {
                     <Modal
                       isVisible={this.state.defaultModalVisible}
                       onBackdropPress={()=>{this.setState({defaultModalVisible:!this.state.defaultModalVisible})}}
-                      backdropOpacity={0.0}
+                      backdropOpacity={0.2}
                       style={{
                         width: Dimensions.get('window').width ,
                         height: Dimensions.get('window').height * 0.5,
@@ -185,7 +185,7 @@ export default class setting extends Component {
                         padding: 30,
                       }}
                     >
-                      <View>
+                      <View style={{elevation:1}}>
                         <Header style={{ backgroundColor: '#00bfff' }}
                           androidStatusBarColor="#00bfff"
                         >
@@ -341,85 +341,91 @@ export default class setting extends Component {
                     <Modal
                       isVisible={this.state.typeModalVisible}
                       onBackdropPress={()=>{this.setState({typeModalVisible:!this.state.typeModalVisible})}}
-                      backdropOpacity={0.0}
+                      backdropOpacity={0.2}
                       style={{
-                        width: Dimensions.get('window').width ,
+                        width: Dimensions.get('window').width * 0.8,
                         height: Dimensions.get('window').height * 0.5,
                         alignContent: 'center',
                         padding: 30,
                       }}
                     >
-                      <View>
-                        <Header style={{ backgroundColor: '#00bfff' }}
-                          androidStatusBarColor="#00bfff"
-                        >
-                          <Left>
-                            <Button transparent onPress={() => {
-                              this.setState({ typeModalVisible : !this.state.typeModalVisible })
-                            }}
-                            >
-                              <Icon name='arrow-back' />
-                            </Button>
-                          </Left>
-                          <Body>
-                            <Title>发现幸福</Title>
-                          </Body>
-                          <Right>
-                          </Right>
-                        </Header>
-                        <View style={styles.newDateModal}>
-                          <Text style={{fontSize:20,color: 'gray'}}>
-                            又发现了新的能你幸福的事情种类？记下来！
-                          </Text>
-                          <ListItem>
-                            <Item floatingLabel style={{underlineColor:'transparent'}}>
-                              <Label>种类名称</Label>
-                              <Input 
-                                value={this.state._name}
-                                onChangeText={(text) => {this.setState({_name:text})}}
-                              />
-                            </Item>
-                          </ListItem>
-                          
-                          <ListItem>
-                            <Item floatingLabel style={{underlineColor:'transparent'}}>
-                              <Label>描述一下？</Label>
-                              <Input 
-                                value={this.state._default}
-                                onChangeText={(text) => {this.setState({_default:text})}}
-                              />
-                            </Item>
-                          </ListItem>
-                          <View>
-                            <Button success onPress={()=>{
-                              for(let i = 0; i < this.state.Type.length; i++){
-                                if(this.state._name===this.state.Type[i].name){
-                                  alert("名称重复，已经有这个种类了...");
+                      <View style={{
+                        width: Dimensions.get('window').width * 0.8,
+                        height: Dimensions.get('window').height * 0.5,
+                        alignContent: 'center',
+                      }}>
+                        <Container style={{flex: 1}}>
+                          <Header style={{ backgroundColor: '#00bfff' }}
+                            androidStatusBarColor="#00bfff"
+                          >
+                            <Left>
+                              <Button transparent onPress={() => {
+                                this.setState({ typeModalVisible : !this.state.typeModalVisible })
+                              }}
+                              >
+                                <Icon name='arrow-back' />
+                              </Button>
+                            </Left>
+                            <Body>
+                              <Title>发现幸福</Title>
+                            </Body>
+                            <Right>
+                            </Right>
+                          </Header>
+                          <View style={styles.newDateModal}>
+                            <Text style={{fontSize:20,color: 'gray'}}>
+                              又发现了新的能你幸福的事情种类？记下来！
+                            </Text>
+                            <ListItem>
+                              <Item floatingLabel style={{underlineColor:'transparent'}}>
+                                <Label>种类名称</Label>
+                                <Input 
+                                  value={this.state._name}
+                                  onChangeText={(text) => {this.setState({_name:text})}}
+                                />
+                              </Item>
+                            </ListItem>
+                            
+                            <ListItem>
+                              <Item floatingLabel style={{underlineColor:'transparent'}}>
+                                <Label>描述一下？</Label>
+                                <Input 
+                                  value={this.state._default}
+                                  onChangeText={(text) => {this.setState({_default:text})}}
+                                />
+                              </Item>
+                            </ListItem>
+                            <View>
+                              <Button success onPress={()=>{
+                                for(let i = 0; i < this.state.Type.length; i++){
+                                  if(this.state._name===this.state.Type[i].name){
+                                    alert("名称重复，已经有这个种类了...");
+                                    return;
+                                  }
+                                }
+                                if(this.state._name===''){
+                                  alert("总能找到这个分类的名字吧~");
                                   return;
                                 }
-                              }
-                              if(this.state._name===''){
-                                alert("总能找到这个分类的名字吧~");
-                                return;
-                              }
-                              this.state.Type[this.state._name]=
-                              {
-                                name:this.state._name,
-                                type:this.state._name,
-                                default:this.state._default,
-                              };
-                              //存储数据
-                              this.setState({Type:this.state.Type});
-                              Storage.setStorage('Type', JSON.stringify(this.state.Type)).then(()=>{
-                                this.setState({typeModalVisible:!this.state.typeModalVisible});
-                                DeviceEventEmitter.emit('updateTypeData');
-                              }
-                              );
-                            }}>
-                              <Icon name='checkmark'/>
-                            </Button>
+                                this.state.Type[this.state._name]=
+                                {
+                                  name:this.state._name,
+                                  type:this.state._name,
+                                  default:this.state._default,
+                                };
+                                //存储数据
+                                this.setState({Type:this.state.Type});
+                                Storage.setStorage('Type', JSON.stringify(this.state.Type)).then(()=>{
+                                  this.setState({typeModalVisible:!this.state.typeModalVisible});
+                                  DeviceEventEmitter.emit('updateTypeData');
+                                }
+                                );
+                              }}>
+                                <Icon name='checkmark'/>
+                              </Button>
+                            </View>
                           </View>
-                        </View>
+                        </Container>
                       </View>
                     </Modal>
                   </CardItem>
