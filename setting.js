@@ -113,60 +113,75 @@ export default class setting extends Component {
               <Card>
                 <CardItem header>
                   <Left>
-                    <Button info iconLeft onPress={async() => {
-                      try {
-                        const {action, year, month, day} = await DatePickerAndroid.open({
-                          // 要设置默认值为今天的话，使用`new Date()`即可。
-                          // 下面显示的会是2020年5月25日。月份是从0开始算的。
-                          date: new Date(),
-                        });
-                        if (action !== DatePickerAndroid.dismissedAction) {
-                          // 这里开始可以处理用户选好的年月日三个参数：year, month (0-11), day
-                          alert('还没创建这一天的卡片呢~');
-                        }
-                      } catch ({code, message}) {
-                        console.warn('Cannot open date picker', message);
-                      }
-                    }}>
-                        <Icon name='calendar'/>
-                        <Text>默认列表设置</Text>
+                    <Button info iconLeft onPress={() => {this.setState({nowBack:false})}}>
+                        <Icon name='list'/>
+                        <Text>默认列表</Text>
                     </Button>
                   </Left>
+                  <Button info iconRight onPress={() => {this.setState({nowBack:true})}}>
+                      <Text>种类</Text>
+                      <Icon name='swap'/>
+                  </Button>
                 </CardItem>
                 <View style={styles.itemContain}>
-                  {this.state.defaultList.map((items)=>{
+                  {this.state.defaultList.map((items,index)=>{
                       return(
                       <CardItem CardBody style={styles.itemContainer}>
                         <Left>
                           <Body>
-                            <Text>{items.name}</Text>
+                            <Text>{items.name}({this.state.Type[items.type].name})</Text>
                           </Body>
                         </Left>
                         <Body>
-                          <Text>{this.state.Type[items.type].name}</Text>
                         </Body>
+                        <Right style={{width:30}}>
                           <Icon name="heart" style={{ color: '#ED4A6A' }} />
                           <Text>{items.val}</Text>
+                          <Button large info style={{height:20,borderColor:'transparent'}}
+                          bordered onPress={()=>{
+                            //删除函数
+                            this.state.defaultList.splice(index,1);
+                            this.setState({Type:this.state.defaultList});
+                            Storage.setStorage('Type',JSON.stringify(this.state.Type));
+                            DeviceEventEmitter.emit('updatedefaultData');
+                          }}>
+                            <Icon name="close" />
+                          </Button>
+                        </Right>
                       </CardItem>);
                   })}
                   <Text>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
+                  <CardItem>
+
+                  </CardItem>
                 </View>
+                {/*}
                 <CardItem footer style={styles.itemButtom}>
                   <Button primary onPress={() => {this.setState({nowBack:true})}}>
                     <Icon name='settings' />
                   </Button>
                 </CardItem>
+              */}
               </Card>
             </View>
             {/* Back Side */}
             <View style={styles.face}>
               <Card>
                 <CardItem header>
+                  <Left>
+                   <Button info iconLeft onPress={() => {}}>
+                        <Icon name='star'/>
+                        <Text>种类</Text>
+                    </Button>
+                  </Left>
+                  <Button info iconRight onPress={() => {this.setState({nowBack:false})}}>
+                      <Text>默认列表</Text>
+                      <Icon name='swap'/>
+                  </Button>
                 </CardItem>
                 <View style={{height:Content_HEIGHT}}>
-
-                  <Text>说到底，幸福这种东西是因人而异的，有人觉得有饭吃就很幸福，有人觉得有书看就很幸福，有人认为努力活在当下才是最重要的，也有人在达到某种目标的瞬间便感到此生无憾，有些人只要某个人得到幸福，自己就会跟着幸福，也有些人则令人伤透脑筋地刚好相反。(《末日时在做什么？有没有空？可以来拯救吗？》兰朵露可)</Text>
-                  <Text>所以...那些种类的事情能让你感到幸福呢？</Text>
+                  <Text style={{padding:15}}>说到底，幸福这种东西是因人而异的，有人觉得有饭吃就很幸福，有人觉得有书看就很幸福，有人认为努力活在当下才是最重要的，也有人在达到某种目标的瞬间便感到此生无憾，有些人只要某个人得到幸福，自己就会跟着幸福，也有些人则令人伤透脑筋地刚好相反。(《末日时在做什么？有没有空？可以来拯救吗？》兰朵露可)</Text>
+                  <Text style={{padding:15}}>所以...那些种类的事情能让你感到幸福呢？</Text>
                   {Object.keys(this.state.Type).map((obj, idx) =>{
                     return(
                     <CardItem style={styles.checkList}>
@@ -306,6 +321,7 @@ export default class setting extends Component {
 const styles = StyleSheet.create({
   card: {
     alignItems: 'center',
+    marginTop: 20,
   },
   face: {
     width: ITEM_WIDTH,
@@ -319,7 +335,6 @@ const styles = StyleSheet.create({
     marginTop: 10
   },
   itemContainer: {
-    width: ITEM_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -349,7 +349,7 @@ export class HomeScreen extends Component {
       if (x !== null) this.setState({ defaultList: JSON.parse(x) });
       else {
         Storage.setStorage('defaultList', JSON.stringify(this.state.defaultList));
-        DeviceEventEmitter.emit('updateDefaultData');
+        DeviceEventEmitter.emit('updatedefaultData');
       }
     });
   }
