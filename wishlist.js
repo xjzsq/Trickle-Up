@@ -53,6 +53,7 @@ export default class wishlist extends Component {
         price: 0,
         imgSource: null,
       },
+      BG: null,
       data: [
         // {
         //   name: 'ryzen 3900x',
@@ -155,8 +156,38 @@ export default class wishlist extends Component {
           <Body>
             <Title style={{alignContent: 'center', fontSize: 20}}>种草机</Title>
           </Body>
+          <Right>
+            <Button transparent onPress={()=>{
+              ImagePicker.openPicker({
+                width: Dimensions.get('window').width,
+                height: Dimensions.get('window').height,
+                cropping: true,
+                includeBase64: true,
+                includeExif: true,
+              }).then(image => {
+                this.setState({
+                    BG: {
+                      uri: `data:${image.mime};base64,` + image.data,
+                      width: image.width,
+                      height: image.height,
+                    },
+                });
+              });
+            }}>
+              <Icon name="settings"/>
+            </Button>
+          </Right>
         </Header>
-        <View style={{flex: 1}}>
+        <ImageBackground source={this.state.BG == null ? require('./o2.jpg') : this.state.BG} style={{
+          height: "100%",
+          width: "100%",
+          marginBottom: 10,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "white",
+          opacity: 0.4
+        }} />
+        <View style={{flex: 1 , width: "100%"}}>
           <DraggableFlatList
             activationDistance={15}
             data={this.state.data}
@@ -193,7 +224,7 @@ export default class wishlist extends Component {
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  <Item floatingLabel>
+                  <Item floatingLabel style={{padding: 5}}>
                     <Label>想买点啥呢</Label>
                     <Input
                       onChangeText={text => {
