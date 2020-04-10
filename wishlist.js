@@ -206,7 +206,7 @@ export default class wishlist extends Component {
             />
           </View>
         </ImageBackground>
-        <ActionButton onPress={this.toggleModal} />
+        <ActionButton onPress={this.toggleModal} style={{zIndex: 1}}/>
         <Modal
           isVisible={this.state.isModalVisible}
           onBackdropPress={this.toggleModal}
