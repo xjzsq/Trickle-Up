@@ -216,9 +216,7 @@ export default class wishlist extends Component {
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  <Item style={styles.row}>
-                    <Image source={this.state.modalTemp.imgSource} />
-                  </Item>
+                  
                   <Item floatingLabel>
                     <Label>Name</Label>
                     <Input
@@ -247,12 +245,13 @@ export default class wishlist extends Component {
                       }}
                     />
                   </Item>
+                  <View style={styles.row}>
                   <Button
-                    style={{padding: 25}}
+                    style={{padding: 25, flex: 0.75}}
                     onPress={() => {
                       ImagePicker.openPicker({
-                        width: 100,
-                        height: 100,
+                        width: 50,
+                        height: 50,
                         cropping: true,
                         includeBase64: true,
                         includeExif: true,
@@ -272,6 +271,10 @@ export default class wishlist extends Component {
                     }}>
                     <Text>选择图片</Text>
                   </Button>
+                  <Item style={styles.row}>
+                    <Image source={this.state.modalTemp.imgSource} />
+                  </Item>
+                  </View>
 
                   <View style={styles.row}>
                     <Button

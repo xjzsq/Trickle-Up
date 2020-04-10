@@ -41,6 +41,29 @@ import Storage from './storage.js'
 import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 
+const setStorage = async (key, value) => {
+    try {
+        await AsyncStorage.setItem(key, value);
+        return true;
+    } catch (error) {
+        // Error saving data
+        return false;
+    }
+}
+
+const getStorage = async (key) => {
+    try {
+        const value = await AsyncStorage.getItem(key);
+        if (value !== null) {
+            return value;
+        }
+    } catch (error) {
+        // Error retrieving data
+        return null;
+    }
+    return null;
+}
+
 /* about screen */
 const cards = [{
         text: 'Card One',
@@ -115,6 +138,7 @@ const Content_HEIGHT = SLIDER_HEIGHT - 180;
 export class HomeScreen extends Component {
     constructor(props) {
         super(props);
+        this.refs = {};
         this._renderItem = this._renderItem.bind(this);
         this.setDate = this.setDate.bind(this);
         this.state = {
@@ -274,16 +298,19 @@ export class HomeScreen extends Component {
                     type: 'game',
                     name: '游戏',
                     DefaultText: '游戏胜利',
+                    DefaultVal: 2,
                 },
                 'home': {
                     type: 'home',
                     name: '家庭',
                     DefaultText: '家庭活动',
+                    DefaultVal: 3,
                 },
                 'school': {
                     type: 'school',
                     name: '学校',
                     DefaultText: '自由规划学习时间',
+                    DefaultVal: 2,
                 },
             },
             defaultList: [{
@@ -325,12 +352,12 @@ export class HomeScreen extends Component {
         });
     }
     componentDidMount() {
-        this.typelistener = DeviceEventEmitter.addListener('updateTypeData', () => {
+        DeviceEventEmitter.addListener('updateTypeData', () => {
             Storage.getStorage('Type').then((x) => {
                 this.setState({ Type: JSON.parse(x) });
             });
         });
-        this.defaultlistener = DeviceEventEmitter.addListener('updatedefaultData', () => {
+        DeviceEventEmitter.addListener('updatedefaultData', () => {
             Storage.getStorage('defaultList').then((x) => {
                 this.setState({ defaultList: JSON.parse(x) });
             });
@@ -338,7 +365,7 @@ export class HomeScreen extends Component {
     }
     componentWillMount() {
         this.updateTotHappy();
-        this.typelistener.remove();
+        DeviceEventEmitter.removeAllListeners();
     }
     updateTotHappy() {
         let tot = 0;
@@ -362,9 +389,8 @@ export class HomeScreen extends Component {
         let newDate = new Date(_newDate)
         return (
             <Text>
-        {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
-      </Text>
-
+            {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
+          </Text>
         );
     }
     onTypeValueChange(value: string) {
@@ -380,7 +406,7 @@ export class HomeScreen extends Component {
     _renderItem({ item, index }) {
         let tot = 0;
         return (
-            <View ref = "source">
+            <View>
         <ScrollView>
           <FlipCard 
             style={styles.card}
@@ -393,7 +419,7 @@ export class HomeScreen extends Component {
             onFlipEnd={(isFlipEnd)=>{console.log('isFlipEnd', isFlipEnd)}}
           >
             {/* Face Side */}
-            <View style={styles.face} res={shot=>this.refs[`${index}`] = shot}>
+            <View style={styles.face}>
               <Card>
                 <CardItem header>
                   <Left>
@@ -450,19 +476,6 @@ export class HomeScreen extends Component {
                   <Button primary onPress={() => {this.setState({nowBack:index})}}>
                     <Icon name='settings' />
                   </Button>
-                  <Button onPress={() =>{
-              captureRef(this.refs[`${index}`],{
-                format: "jpg",
-                quality: 0.8,
-                result:"data-uri"
-              }).then(res => {
-                Share.open({
-                  url: res
-                })
-              })
-            }} >
-              <Icon name='share' />
-            </Button>
                 </CardItem>
               </Card>
             </View>
@@ -485,7 +498,7 @@ export class HomeScreen extends Component {
                           }
                           item[1]=totHappy;
                           this.setState({HappyThings:this.state.HappyThings});
-                          Storage.setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
+                          setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
                           this.updateTotHappy();
                         }
                       }/>
@@ -595,7 +608,7 @@ export class HomeScreen extends Component {
                                   if(this.state.HappyThings[index][2][i].name===items.name){
                                     this.setState({HappyThings:this.state.HappyThings});
                                     //存储数据
-                                    Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                    setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                                       this.setState({setVisible:-1})
                                     );
                                   }
@@ -627,7 +640,7 @@ export class HomeScreen extends Component {
                                 item[1]=totHappy;
                                 this.setState({HappyThings:this.state.HappyThings});
                                 //存储数据
-                                Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
+                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
                                   this.updateTotHappy();
                                   this.setState({setVisible:-1});
                                 }
@@ -797,7 +810,7 @@ export class HomeScreen extends Component {
                               item[1]=totHappy;
                               //存储数据
                               this.setState({HappyThings:this.state.HappyThings});
-                              Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
+                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
                                 this.updateTotHappy();
                                 this.setState({newVisible:-1});
                               }
@@ -853,6 +866,11 @@ export class HomeScreen extends Component {
           </Right>
         </Header>
         <View>
+          {/*}
+          <Text style={styles.counter}>
+            {this.getDateENFormat(this.state.HappyThings[this.state.index][0])}
+          </Text>
+        */}
           <Carousel
             ref={(c) => this.carousel = c}
             data={this.state.HappyThings}
@@ -972,7 +990,7 @@ export class HomeScreen extends Component {
                     this.setState({HappyThings :list});
                   }
                   //存储数据
-                  Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                  setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                     this.setState({modalVisible:false})
                   );
                 }}>
@@ -1013,6 +1031,12 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
         justifyContent: 'center',
         height: 50,
+    },
+    counter: {
+        marginTop: 25,
+        fontSize: 30,
+        fontWeight: 'bold',
+        textAlign: 'center'
     },
 });
 
