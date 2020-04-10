@@ -34,14 +34,12 @@ import { NavigationContainer } from '@react-navigation/native';
 import Carousel from 'react-native-snap-carousel';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card' //卡片翻转效果
-import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
 import Storage from './storage.js';
 import otaku from './otaku.js';
 import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
-import {FlatList} from 'react-native-gesture-handler';
 /* about screen */
 
 function AboutScreen({ navigation }) {
@@ -62,7 +60,7 @@ function AboutScreen({ navigation }) {
         </Body>
         <Right/>
       </Header>
-        <ImageBackground source={require('./o3.png')}
+        <ImageBackground source={require('./p3.png')}
            style={{
              width: "100%",
              height: "100%",
@@ -246,7 +244,7 @@ export class HomeScreen extends Component {
             {/* Face Side */}
             <View style={styles.face}>
               <Card>
-                <ImageBackground source={this.state.BG == null ? require('./o1.png') : this.state.BG}
+                <ImageBackground source={this.state.BG == null ? require('./p1.png') : this.state.BG}
                  style={{
                    width: "100%",
                    height: "100%",
@@ -316,7 +314,7 @@ export class HomeScreen extends Component {
             {/* Back Side */}
             <View>
               <Card>
-              <ImageBackground source={this.state.BG == null ? require('./o5.png') : this.state.BG}
+              <ImageBackground source={this.state.BG == null ? require('./p5.png') : this.state.BG}
                  style={{
                    width: "100%",
                    height: "100%",
@@ -939,9 +937,6 @@ const styles = StyleSheet.create({
 const DrawerNav = createDrawerNavigator();
 
 export default function App() {
-  RNShakeEvent.addEventListener('shake', () => {
-    console.log('Device shake!');
-  });
   return (
     <NavigationContainer>
       <DrawerNav.Navigator initialRouteName="主页" 

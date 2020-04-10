@@ -1,21 +1,14 @@
 import React, { Component } from 'react';
-import { ImageBackground, Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
+import { ImageBackground, Dimensions, StyleSheet, ScrollView, DeviceEventEmitter } from 'react-native';
 import {
   Container,
   Text,
   View,
-  DeckSwiper,
   Header,
   Title,
-  Content,
-  Footer,
   ListItem,
-  List,
-  Form,
   Label,
   Item,
-  FooterTab,
-  Thumbnail,
   Button,
   Left,
   Right,
@@ -23,13 +16,9 @@ import {
   Icon,
   Card,
   CardItem,
-  Fab,
-  DatePicker,
-  CheckBox,
   Input,
   Picker,
 } from 'native-base';
-import { scrollInterpolator, animatedStyles } from './utils/animations';
 import FlipCard from 'react-native-flip-card'; //卡片翻转效果
 import Modal from 'react-native-modal';
 import Storage from './storage.js';
@@ -124,7 +113,7 @@ export default class setting extends Component {
             {/* Face Side */}
             <View style={styles.face}>
               <Card>
-              <ImageBackground source={this.state.BG == null ? require('./o1.png') : this.state.BG}
+              <ImageBackground source={this.state.BG == null ? require('./p1.png') : this.state.BG}
                style={{
                  width: "100%",
                  height: "100%",
@@ -299,7 +288,7 @@ export default class setting extends Component {
             {/* Back Side */}
             <View style={styles.face}>
               <Card>
-                <ImageBackground source={this.state.BG == null ? require('./o4.png') : this.state.BG}
+                <ImageBackground source={this.state.BG == null ? require('./p4.png') : this.state.BG}
                  style={{
                    width: "100%",
                    height: "100%",
