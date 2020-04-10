@@ -149,7 +149,7 @@ export default class setting extends Component {
                           <Text>{items.val}</Text>
                       </CardItem>);
                   })}
-                  <Text>{(this.state.defaultList.length !== 0)?'':"这里空空如也,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
+                  <Text>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
                   <Button primary onPress={() => {this.setState({nowBack:true})}}>
@@ -305,8 +305,8 @@ export default class setting extends Component {
 
 const styles = StyleSheet.create({
   card: {
-    
-  }
+    alignItems: 'center',
+  },
   face: {
     width: ITEM_WIDTH,
   },
