@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
+import { ImageBackground, Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
 import {
   Container,
   Text,
@@ -48,6 +48,7 @@ export default class setting extends Component {
       _default: '',
       _type:'',
       _val:'',
+      BG:null,
       nowBack: false,
       typeModalVisible: false,
       defaultModalVisible: false,
@@ -123,7 +124,15 @@ export default class setting extends Component {
             {/* Face Side */}
             <View style={styles.face}>
               <Card>
-                <CardItem header>
+              <ImageBackground source={this.state.BG == null ? require('./o1.png') : this.state.BG}
+               style={{
+                 width: "100%",
+                 height: "100%",
+               }}
+               imageStyle={{
+                opacity: 0.5   
+              }}>
+                <CardItem header style={{backgroundColor: 'transparent'}}>
                   <Left>
                     <Button info iconLeft onPress={() => {this.setState({nowBack:false})}}>
                         <Icon name='list'/>
@@ -159,7 +168,7 @@ export default class setting extends Component {
                       </CardItem>);
                   })}
                   <Text style={{padding : 15}}>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
-                  <CardItem>
+                  <CardItem style={{backgroundColor: 'transparent'}}>
                     <Left style={{paddingLeft: 9}}>
                       <Text>又有每天都能让你感到幸福的事情了吗?</Text>
                     </Left>
@@ -265,6 +274,7 @@ export default class setting extends Component {
                                   name:this.state._name,
                                   type:this.state._type,
                                   val:this.state._val,
+                                  done: false,
                                 }
                               );
                               //存储数据
@@ -283,12 +293,21 @@ export default class setting extends Component {
                     </Modal>
                   </CardItem>
                 </View>
+                </ImageBackground>
               </Card>
             </View>
             {/* Back Side */}
             <View style={styles.face}>
               <Card>
-                <CardItem header>
+                <ImageBackground source={this.state.BG == null ? require('./o4.png') : this.state.BG}
+                 style={{
+                   width: "100%",
+                   height: "100%",
+                 }}
+                 imageStyle={{
+                  opacity: 0.38   
+                }}>
+                <CardItem header style={{backgroundColor: 'transparent'}}>
                   <Left>
                    <Button info iconLeft onPress={() => {}}>
                         <Icon name='star'/>
@@ -430,6 +449,7 @@ export default class setting extends Component {
                     </Modal>
                   </CardItem>
                 </View>
+                </ImageBackground>
               </Card>
             </View>
           </FlipCard>
@@ -448,7 +468,9 @@ const styles = StyleSheet.create({
   face: {
     width: ITEM_WIDTH,
   },
-  checkList: {},
+  checkList: {
+    backgroundColor: 'transparent',
+  },
   newDateModal: {
     padding: 20,
     backgroundColor: 'white',
@@ -459,6 +481,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   itemDate: {
     alignItems: 'flex-start',
@@ -467,6 +490,7 @@ const styles = StyleSheet.create({
   itemContain: {
     height: Content_HEIGHT,
     alignItems: 'flex-end',
+    backgroundColor: 'transparent',
   },
   itemButtom: {
     alignItems: 'flex-end',

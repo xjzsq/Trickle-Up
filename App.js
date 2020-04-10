@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
+import { ImageBackground, Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
 import {
   Container,
   Text,
@@ -42,30 +42,6 @@ import otaku from './otaku.js';
 import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 import {FlatList} from 'react-native-gesture-handler';
-
-const setStorage = async (key, value) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-    return true;
-  } catch (error) {
-    // Error saving data
-    return false;
-  }
-}
-
-const getStorage = async (key) => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value;
-    }
-  } catch (error) {
-    // Error retrieving data
-    return null;
-  }
-  return null;
-}
-
 /* about screen */
 const cards = [{
     text: 'Card One',
@@ -158,162 +134,22 @@ export class HomeScreen extends Component {
       _default: false,
       chosenDate: new Date(),
       shotModal: false,
-      HappyThings: [
-        [
-          new Date(2020, 3, 10),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 9),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 8),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 7),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 6),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 5),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 4),
-          6,
-          [{
-              name: '不用上课',
-              type: 'school',
-              val: 3,
-              done: true,
-            },
-            {
-              name: '祭祀祖先',
-              type: 'home',
-              val: 3,
-              done: true,
-            },
-          ],
-        ],
-        [
-          new Date(2020, 3, 3),
-          4,
-          [{
-              name: '今晚吃鸡',
-              type: 'game',
-              val: 2,
-              done: true,
-            },
-            {
-              name: '下午没课',
-              type: 'school',
-              val: 2,
-              done: true,
-            },
-          ],
-        ],
-      ],
+      HappyThings: [],
       Type: {
         'game': {
           type: 'game',
           name: '游戏',
           DefaultText: '游戏胜利',
-          DefaultVal: 2,
         },
         'home': {
           type: 'home',
           name: '家庭',
           DefaultText: '家庭活动',
-          DefaultVal: 3,
         },
         'school': {
           type: 'school',
           name: '学校',
           DefaultText: '自由规划学习时间',
-          DefaultVal: 2,
         },
       },
       defaultList: [{
@@ -424,7 +260,15 @@ export class HomeScreen extends Component {
             {/* Face Side */}
             <View style={styles.face}>
               <Card>
-                <CardItem header>
+                <ImageBackground source={this.state.BG == null ? require('./o1.png') : this.state.BG}
+                 style={{
+                   width: "100%",
+                   height: "100%",
+                 }}
+                 imageStyle={{
+                  opacity: 0.5   
+                }}>
+                <CardItem header style={{backgroundColor: 'transparent'}}>
                   <Left>
                     <Button info iconLeft onPress={async() => {
                       try {
@@ -480,6 +324,7 @@ export class HomeScreen extends Component {
                     <Icon name='settings' />
                   </Button>
                 </CardItem>
+                </ImageBackground>
               </Card>
             </View>
             {/* Back Side */}
@@ -501,7 +346,7 @@ export class HomeScreen extends Component {
                           }
                           item[1]=totHappy;
                           this.setState({HappyThings:this.state.HappyThings});
-                          setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
+                          Storage.setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
                           this.updateTotHappy();
                         }
                       }/>
@@ -614,7 +459,7 @@ export class HomeScreen extends Component {
                                   if(this.state.HappyThings[index][2][i].name===items.name){
                                     this.setState({HappyThings:this.state.HappyThings});
                                     //存储数据
-                                    setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                                    Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                                       this.setState({setVisible:-1})
                                     );
                                   }
@@ -646,7 +491,7 @@ export class HomeScreen extends Component {
                                 item[1]=totHappy;
                                 this.setState({HappyThings:this.state.HappyThings});
                                 //存储数据
-                                setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
+                                Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then((x)=>{
                                   this.updateTotHappy();
                                   this.setState({setVisible:-1});
                                 }
@@ -819,7 +664,7 @@ export class HomeScreen extends Component {
                               item[1]=totHappy;
                               //存储数据
                               this.setState({HappyThings:this.state.HappyThings});
-                              setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
+                              Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(()=>{
                                 this.updateTotHappy();
                                 this.setState({newVisible:-1});
                               }
@@ -1012,7 +857,7 @@ export class HomeScreen extends Component {
                     this.setState({HappyThings :list});
                   }
                   //存储数据
-                  setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
+                  Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
                     this.setState({modalVisible:false})
                   );
                 }}>
@@ -1040,6 +885,7 @@ const styles = StyleSheet.create({
     //width: ITEM_WIDTH,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
   },
   itemDate: {
     alignItems: 'flex-start',
@@ -1048,6 +894,7 @@ const styles = StyleSheet.create({
   itemContain: {
     height: Content_HEIGHT,
     alignItems: 'flex-end',
+    backgroundColor: 'transparent',
   },
   itemButtom: {
     alignItems: 'flex-end',
