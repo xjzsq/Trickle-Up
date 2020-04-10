@@ -63,8 +63,6 @@ const getStorage = async key => {
 export default class wishlist extends Component {
   constructor(props) {
     super(props);
-    const tempCnt = getStorage('totalItem');
-    const tempData = getStorage('wishItem');
     this.state = {
       isModalVisible: false,
       totalItem: 0,
@@ -89,19 +87,10 @@ export default class wishlist extends Component {
         // },
       ],
     };
-
-    if (tempCnt)
-      tempCnt.then(val => {
-        if (val) this.state.totalItem = parseInt(val);
-      });
-    if (tempData) {
-      tempData.then(val => {
-        if (val) {
-          const jsonval = JSON.parse(val);
-          this.setState({data: jsonval});
-        }
-      });
-    }
+    getStorage('wishItem').then((x) =>{
+      if(x!= null) this.setState({data: JSON.parse(x)});
+    });
+    if(this.state.data.length != 0) this.state.totalItem = x.length;
   }
 
   renderItem = ({item, index, drag}) => {
@@ -114,8 +103,8 @@ export default class wishlist extends Component {
               const updd = this.state.data.filter(d => d !== item);
               LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
               this.state.totalItem--;
+              setStorage('wishItem', JSON.stringify(updd));
               this.setState({data: updd});
-              this.saveData();
             }}>
             删除
           </Text>
@@ -201,7 +190,7 @@ export default class wishlist extends Component {
         <Modal
           isVisible={this.state.isModalVisible}
           onBackdropPress={this.toggleModal}
-          backdropOpacity={0.0}
+          backdropOpacity={0.2}
           style={{
             width: Dimensions.get('window').width * 0.8,
             height: Dimensions.get('window').height * 0.5,
@@ -213,11 +202,11 @@ export default class wishlist extends Component {
               width: Dimensions.get('window').width * 0.8,
               height: Dimensions.get('window').height * 0.5,
               alignContent: 'center',
-              padding: 30,
+              margin: 5,
               elevation: 1.5,
-              shadowOffset: {width: 0, height: 0},
-              shadowOpacity: 1,
-              shadowRadius: 1.5,
+              borderWidth:1,
+              borderStyle:'solid',
+              borderRadius:10,
             }}>
             <Container style={{flex: 1}}>
               <Content>
