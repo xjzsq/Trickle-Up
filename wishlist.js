@@ -294,7 +294,7 @@ export default class wishlist extends Component {
                       }}>
                       <Icon name="camera" />
                     </Button>
-                    <Item style={(styles.row, {flex: 4})}>
+                    <Item style={(styles.row, {flex: 3})}>
                       <Image source={this.state.modalTemp.imgSource} />
                     </Item>
                   </View>
