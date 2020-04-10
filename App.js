@@ -43,22 +43,6 @@ import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 import {FlatList} from 'react-native-gesture-handler';
 /* about screen */
-const cards = [{
-    text: 'Card One',
-    name: '1',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 2',
-    name: '2',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 3',
-    name: '3',
-    image: require('./o1.jpg'),
-  },
-];
 
 function AboutScreen({ navigation }) {
   return (
@@ -78,31 +62,33 @@ function AboutScreen({ navigation }) {
         </Body>
         <Right/>
       </Header>
-        <View>
-          <DeckSwiper
-              dataSource={cards}
-              renderItem={item =>
-                <Card style={{ elevation: 3 }}>
-                  <CardItem>
-                    <Left>
-                      <Thumbnail source={item.image} />
-                      <Body>
-                        <Text>{item.text}</Text>
-                        <Text note>NativeBase</Text>
-                      </Body>
-                    </Left>
-                  </CardItem>
-                  <CardItem cardBody>
-                    <Image style={{ height: 300, flex: 1 }} source={item.image} />
-                  </CardItem>
-                  <CardItem>
-                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                    <Text>{item.name}</Text>
-                  </CardItem>
-                </Card>
-              }
-            />
-        </View>
+        <ImageBackground source={require('./o3.png')}
+           style={{
+             width: "100%",
+             height: "100%",
+           }}
+           imageStyle={{
+            opacity: 0.38   
+          }}>
+          <View style={{padding : 20}}>
+            <Text>三个月前，一只蝙蝠轻轻扇动了翅膀。三个月后，全球掀起了风暴……</Text>
+            <Text>小B同学也是被风暴席卷的千千万万人中的一个，这段时间他在家中勤奋学习自我隔离，却觉得自己越
+来越不幸福了。</Text>
+            <Text>为什么会变成这样呢……第一次有了可以自由学习的时间，有了能多陪陪爸妈的时间。两件幸福的
+            事重合在一起。而这两份幸福，又给我带来更多的幸福。得到的，本该是像梦境一般幸福的时
+            间……但是，为什么，会变成这样呢……</Text>
+            <Text>可怜的小B渐渐消沉下去，而学计算机的你决定写一个程序来提升小B的幸福感。让你可以大声问小B：</Text>
+            <Text style={{color:'#ED4A6A'}}>“你幸福吗？！”</Text>
+            <Text>有关幸福的理解各不相同，小B期待着你对幸福的理解……</Text>
+            <Text/>
+            <Text style={{color:'#00bfff'}}>正如小B同学和兰朵露可所说：“幸福本身就是因人而异的”</Text>
+            <Text style={{color:'#00bfff'}}>因此，我们设计了点滴日记，我们希望小B同学在这里记录下每天仅属于自己与众不同的幸福时刻</Text>
+            <Text style={{color:'#00bfff'}}>依据幸福的定义，满足欲望亦是一种幸福，但不恰当的消费会带来，较之于幸福，更大的痛苦。</Text>
+            <Text style={{color:'#00bfff'}}>参照GTD任务管理模式和GTB消费体系，我们设计了种草机，希望小B同学在这里可以在买下真正所爱之物的同时，省下钱。</Text>
+            <Text style={{color:'#00bfff'}}>我们深知，作为一个能让小B感到幸福的APP，因此我们设计了自认为满溢幸福的UI界面，并将世界上最幸福的女孩——珂朵莉蓝作为主体颜色。</Text>
+            <Text style={{color:'#00bfff'}}>此外，我们专门设计了幸福小贴士以及一些能让猛男们感到幸福的功能，希望小B同学能够感受到来自二次元满满的幸福。</Text>
+          </View>
+        </ImageBackground>
     </Container>
   );
 }
