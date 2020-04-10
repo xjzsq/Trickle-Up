@@ -35,13 +35,15 @@ import Modal from 'react-native-modal';
 import Storage from './storage.js';
 import Sound from 'react-native-sound';
  
-let mp3 = require('./1.mp3');//支持众多格式
+let mp3 = require('./2.mp3');//支持众多格式
 //如果是网络音频，使用 new Sound(mp3,null,error => {})
 let whoosh = new Sound(mp3, (error) => {
   if (error) {
     return console.log('资源加载失败', error);
   }
 });
+
+let ooo=new Sound(require('./1.mp3'));
 
 export default class otaku extends Component {
   constructor(props){
@@ -143,17 +145,19 @@ export default class otaku extends Component {
                 <Button info bordered onPress={this._play}>
                   <Icon name={'play'} />
                 </Button>
+                 <Button info bordered onPress={()=>{ooo.play();}}>
+                 <Icon name={'play'} />
+                </Button>
+            </ListItem>
+            <ListItem>
+                <Text>二次元随机萌音！</Text>
                  <Button info bordered onPress={()=>{
-                  var whoosh = new Sound('./2.mp3', Sound.MAIN_BUNDLE, (error) => {
+                  var xxx = new Sound('baka.matrix72.top', Sound.MAIN_BUNDLE, (error) => {
                     if (error) {
                       console.log('failed to load the sound', error);
                       return;
                     }
-                    // loaded successfully
-                    console.log('duration in seconds: ' + whoosh.getDuration() + 'number of channels: ' + whoosh.getNumberOfChannels());
-
-                    // Play the sound with an onEnd callback
-                    whoosh.play((success) => {
+                    xxx.play((success) => {
                       if (success) {
                         console.log('successfully finished playing');
                       } else {
