@@ -52,9 +52,16 @@ export default class setting extends Component {
         	defaultList:[],
         }
         Storage.getStorage('Type').then((x) => {
-        	alert(x);
+          if (x !== null) this.setState({ Type: JSON.parse(x) });
+        });
+
+        Storage.getStorage('defaultList').then((x) => {
+           if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+        });
+    }
+    componentWillMount() {
+        Storage.getStorage('Type').then((x) => {
            if (x !== null) this.setState({ Type: JSON.parse(x) });
-						
         });
 
         Storage.getStorage('defaultList').then((x) => {
@@ -133,7 +140,7 @@ export default class setting extends Component {
                           <Text>{items.val}</Text>
                       </CardItem>);
                   })}
-                  <Text>{(this.state.defaultList.length === 0)?'':"这里空空如也,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
+                  <Text>{(this.state.defaultList.length !== 0)?'':"这里空空如也,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
                 </View>
                 <CardItem footer style={styles.itemButtom}>
                   <Button primary onPress={() => {this.setState({nowBack:true})}}>
@@ -151,25 +158,11 @@ export default class setting extends Component {
 
                   <Text>说到底，幸福这种东西是因人而异的，有人觉得有饭吃就很幸福，有人觉得有书看就很幸福，有人认为努力活在当下才是最重要的，也有人在达到某种目标的瞬间便感到此生无憾，有些人只要某个人得到幸福，自己就会跟着幸福，也有些人则令人伤透脑筋地刚好相反。(《末日时在做什么？有没有空？可以来拯救吗？》兰朵露可)</Text>
                   <Text>所以...那些种类的事情能让你感到幸福呢？</Text>
-                  {this.state.Type.map((items)=>{
+                  {Object.keys(this.state.Type).map((obj, idx) =>{
                     return(
                     <CardItem style={styles.checkList}>
-                      {/*<CheckBox checked={items.done} onPress={
-                        ()=>{
-                          items.done=!items.done;
-                          let totHappy = 0;
-                          for(let i = 0; i < item[2].length;i++){
-                            if(item[2][i].done)totHappy+=item[2][i].val;
-                          }
-                          item[1]=totHappy;
-                          this.setState({HappyThings:this.state.HappyThings});
-                          setStorage('HappyThings',JSON.stringify(this.state.HappyThings));
-                          this.updateTotHappy();
-                        }
-                      }/>
-                    */}
                       <Left style={{paddingLeft: 20}}>
-                        <Text>{items.name}</Text>
+                        <Text>{this.state.Type[obj].name}</Text>
                       </Left>
                       <Right>
                         <Button large info style={{height:20,borderColor:'transparent'}}
@@ -181,7 +174,7 @@ export default class setting extends Component {
                       </Right>
                       
                     </CardItem>
-                    );})}
+                    );})} 
                   <CardItem style={styles.checkList} >
                     <Left style={{paddingLeft: 9}}>
                       <Text>发现了新的能你幸福的事情种类?</Text>
@@ -260,12 +253,12 @@ export default class setting extends Component {
                                 alert("总能找到这个分类的名字吧~");
                                 return;
                               }
-                              this.state.Type.push(
+                              this.state.Type[this.state._name]=
                               {
                                 name:this.state._name,
                                 type:this.state._name,
                                 default:this.state._default,
-                              });
+                              };
                               //存储数据
                               this.setState({Type:this.state.Type});
                               Storage.setStorage('Type', JSON.stringify(this.state.Type)).then(()=>{
