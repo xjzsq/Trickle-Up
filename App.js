@@ -37,7 +37,7 @@ import FlipCard from 'react-native-flip-card' //卡片翻转效果
 import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
-import Storage from './storage.js'
+import Storage from './storage.js';
 import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 import {FlatList} from 'react-native-gesture-handler';

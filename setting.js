@@ -30,9 +30,9 @@ import {
   Picker,
 } from 'native-base';
 import { scrollInterpolator, animatedStyles } from './utils/animations';
-import FlipCard from 'react-native-flip-card' //卡片翻转效果
+import FlipCard from 'react-native-flip-card'; //卡片翻转效果
 import Modal from 'react-native-modal';
-import Storage from './storage.js'
+import Storage from './storage.js';
 
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const SLIDER_HEIGHT = Dimensions.get('window').height;
@@ -161,7 +161,7 @@ export default class setting extends Component {
                   <Text style={{padding : 15}}>{(this.state.defaultList.length !== 0)?'':"这里空荡荡的,不考虑添加几个每天都能让你幸福的事情吗？"}</Text>
                   <CardItem>
                     <Left style={{paddingLeft: 9}}>
-                      <Text>又有能你每天都感到幸福的事情了吗?</Text>
+                      <Text>又有每天都能让你感到幸福的事情了吗?</Text>
                     </Left>
                     <Right>
                       <Button large info style={{height:20,borderColor:'transparent'}}
@@ -302,7 +302,7 @@ export default class setting extends Component {
                 </CardItem>
                 <View style={{height:Content_HEIGHT}}>
                   <Text style={{padding:15}}>说到底，幸福这种东西是因人而异的，有人觉得有饭吃就很幸福，有人觉得有书看就很幸福，有人认为努力活在当下才是最重要的，也有人在达到某种目标的瞬间便感到此生无憾，有些人只要某个人得到幸福，自己就会跟着幸福，也有些人则令人伤透脑筋地刚好相反。(《末日时在做什么？有没有空？可以来拯救吗？》兰朵露可)</Text>
-                  <Text style={{padding:15}}>所以...那些种类的事情能让你感到幸福呢？</Text>
+                  <Text style={{padding:15}}>所以...哪些种类的事情能让你感到幸福呢？</Text>
                   {Object.keys(this.state.Type).map((obj, idx) =>{
                     return(
                     <CardItem style={styles.checkList}>

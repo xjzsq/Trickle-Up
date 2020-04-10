@@ -37,26 +37,7 @@ import ActionButton from 'react-native-action-button';
 import Modal from 'react-native-modal';
 import ImagePicker from 'react-native-image-crop-picker';
 import {SwipeRow} from 'react-native-swipe-list-view';
-const setStorage = async (key, value) => {
-  try {
-    await AsyncStorage.setItem(key, value);
-    return true;
-  } catch (error) {
-    // Error saving data
-    return false;
-  }
-};
-
-const getStorage = async key => {
-  try {
-    const value = await AsyncStorage.getItem(key);
-    if (value !== null) {
-      return value;
-    }
-  } catch (error) {
-    // Error retrieving data
-  }
-};
+import Storage from './storage.js';
 
 /*种草机页面 */
 
@@ -87,10 +68,12 @@ export default class wishlist extends Component {
         // },
       ],
     };
-    getStorage('wishItem').then((x) =>{
+    Storage.getStorage('wishItem').then((x) =>{
       if(x!= null) this.setState({data: JSON.parse(x)});
     });
-    if(this.state.data.length != 0) this.state.totalItem = x.length;
+    Storage.getStorage('totalItem').then((x) =>{
+      if(x!= null) this.setState({totalItem: parseInt(JSON.parse(x))});
+    });
   }
 
   renderItem = ({item, index, drag}) => {
@@ -101,10 +84,10 @@ export default class wishlist extends Component {
             style={styles.backTextWhite}
             onPress={() => {
               const updd = this.state.data.filter(d => d !== item);
-              LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-              this.state.totalItem--;
-              setStorage('wishItem', JSON.stringify(updd));
-              this.setState({data: updd});
+              Storage.setStorage('wishItem', JSON.stringify(updd)).then(()=>{
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+                this.setState({data: updd});
+              });
             }}>
             删除
           </Text>
@@ -127,14 +110,13 @@ export default class wishlist extends Component {
                     </Left>
                     <Right>
                       <CheckBox
-                        onChange={() => {
+                        onChange={async () => {
                           const upd = this.state.data.filter(d => d !== item);
                           LayoutAnimation.configureNext(
                             LayoutAnimation.Presets.spring,
                           );
-                          this.state.totalItem--;
                           this.setState({data: upd});
-                          this.saveData();
+                          await this.saveData();
                         }}
                       />
                     </Right>
@@ -147,14 +129,14 @@ export default class wishlist extends Component {
       </SwipeRow>
     );
   };
-
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
   };
 
   saveData = () => {
-    setStorage('wishItem', JSON.stringify(this.state.data));
-    setStorage('totalItem', JSON.stringify(this.state.totalItem.toString));
+    Storage.setStorage('wishItem', JSON.stringify(this.state.data));
+    console.log(this.state.data);
+    Storage.setStorage('totalItem', JSON.stringify(this.state.totalItem.toString));
   };
   render() {
     const {navigation} = this.props;
