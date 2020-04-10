@@ -63,7 +63,7 @@ export default class setting extends Component {
     });
   }
   componentDidMount() {
-    DeviceEventEmitter.addListener('updateDefaultData', () => {
+    DeviceEventEmitter.addListener('updateDefaultData', (ppp = null) => {
       Storage.getStorage('defaultList').then((x) => {
         this.setState({ defaultList: JSON.parse(x) });
       });

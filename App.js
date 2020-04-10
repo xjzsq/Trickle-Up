@@ -354,12 +354,12 @@ export class HomeScreen extends Component {
     });
   }
   componentDidMount() {
-    DeviceEventEmitter.addListener('updateTypeData', () => {
+    DeviceEventEmitter.addListener('updateTypeData', (ppp = null) => {
       Storage.getStorage('Type').then((x) => {
         this.setState({ Type: JSON.parse(x) });
       });
     });
-    DeviceEventEmitter.addListener('updatedefaultData', () => {
+    DeviceEventEmitter.addListener('updatedefaultData', (ppp = null) => {
       Storage.getStorage('defaultList').then((x) => {
         this.setState({ defaultList: JSON.parse(x) });
         alert("ok");
@@ -511,6 +511,9 @@ export class HomeScreen extends Component {
                       <Right>
                         <Button large info style={{height:20,borderColor:'transparent'}}
                         bordered onPress={()=>{
+                          Storage.getStorage('Type').then((x) => {
+                            this.setState({ Type: JSON.parse(x) });
+                          });
                           this.setState({_name:items.name}),
                           this.setState({_type:items.type}),
                           this.setState({_val:items.val}),
@@ -665,6 +668,9 @@ export class HomeScreen extends Component {
                     <Right>
                       <Button large info style={{height:20,borderColor:'transparent'}}
                       bordered onPress={()=>{
+                        Storage.getStorage('Type').then((x) => {
+                          this.setState({ Type: JSON.parse(x) });
+                        });
                         this.setState({_name:''}),
                         this.setState({_type:'home'}),
                         this.setState({_val:0}),
@@ -892,7 +898,14 @@ export class HomeScreen extends Component {
             position="bottomRight"
             onPress={() => this.setState({ fabActive: !this.state.fabActive })}>
             <Icon name="list" />
-            <Button onPress={() => {this.setState({modalVisible:true})}} style={{ backgroundColor: '#ED4A6A' }}>
+            <Button onPress={() => {
+              Storage.getStorage('defaultList').then((x) => {
+                this.setState({ defaultList: JSON.parse(x) });
+                this.setState({modalVisible:true});
+              });
+            }}
+            style={{ backgroundColor: '#ED4A6A' }}
+            >
               <Icon name="add" />
             </Button>
             <Button style={{backgroundColor: '#3B5998'}} onPress={()=>{
