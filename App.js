@@ -43,22 +43,6 @@ import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 import {FlatList} from 'react-native-gesture-handler';
 /* about screen */
-const cards = [{
-    text: 'Card One',
-    name: '1',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 2',
-    name: '2',
-    image: require('./o1.jpg'),
-  },
-  {
-    text: 'Card 3',
-    name: '3',
-    image: require('./o1.jpg'),
-  },
-];
 
 function AboutScreen({ navigation }) {
   return (
@@ -78,31 +62,33 @@ function AboutScreen({ navigation }) {
         </Body>
         <Right/>
       </Header>
-        <View>
-          <DeckSwiper
-              dataSource={cards}
-              renderItem={item =>
-                <Card style={{ elevation: 3 }}>
-                  <CardItem>
-                    <Left>
-                      <Thumbnail source={item.image} />
-                      <Body>
-                        <Text>{item.text}</Text>
-                        <Text note>NativeBase</Text>
-                      </Body>
-                    </Left>
-                  </CardItem>
-                  <CardItem cardBody>
-                    <Image style={{ height: 300, flex: 1 }} source={item.image} />
-                  </CardItem>
-                  <CardItem>
-                    <Icon name="heart" style={{ color: '#ED4A6A' }} />
-                    <Text>{item.name}</Text>
-                  </CardItem>
-                </Card>
-              }
-            />
-        </View>
+        <ImageBackground source={require('./o3.png')}
+           style={{
+             width: "100%",
+             height: "100%",
+           }}
+           imageStyle={{
+            opacity: 0.38   
+          }}>
+          <View style={{padding : 20}}>
+            <Text>三个月前，一只蝙蝠轻轻扇动了翅膀。三个月后，全球掀起了风暴……</Text>
+            <Text>小B同学也是被风暴席卷的千千万万人中的一个，这段时间他在家中勤奋学习自我隔离，却觉得自己越
+来越不幸福了。</Text>
+            <Text>为什么会变成这样呢……第一次有了可以自由学习的时间，有了能多陪陪爸妈的时间。两件幸福的
+            事重合在一起。而这两份幸福，又给我带来更多的幸福。得到的，本该是像梦境一般幸福的时
+            间……但是，为什么，会变成这样呢……</Text>
+            <Text>可怜的小B渐渐消沉下去，而学计算机的你决定写一个程序来提升小B的幸福感。让你可以大声问小B：</Text>
+            <Text style={{color:'#ED4A6A'}}>“你幸福吗？！”</Text>
+            <Text>有关幸福的理解各不相同，小B期待着你对幸福的理解……</Text>
+            <Text/>
+            <Text style={{color:'#00bfff'}}>正如小B同学和兰朵露可所说：“幸福本身就是因人而异的”</Text>
+            <Text style={{color:'#00bfff'}}>因此，我们设计了点滴日记，我们希望小B同学在这里记录下每天仅属于自己与众不同的幸福时刻</Text>
+            <Text style={{color:'#00bfff'}}>依据幸福的定义，满足欲望亦是一种幸福，但不恰当的消费会带来，较之于幸福，更大的痛苦。</Text>
+            <Text style={{color:'#00bfff'}}>参照GTD任务管理模式和GTB消费体系，我们设计了种草机，希望小B同学在这里可以在买下真正所爱之物的同时，省下钱。</Text>
+            <Text style={{color:'#00bfff'}}>我们深知，作为一个能让小B感到幸福的APP，因此我们设计了自认为满溢幸福的UI界面，并将世界上最幸福的女孩——珂朵莉蓝作为主体颜色。</Text>
+            <Text style={{color:'#00bfff'}}>此外，我们专门设计了幸福小贴士以及一些能让猛男们感到幸福的功能，希望小B同学能够感受到来自二次元满满的幸福。</Text>
+          </View>
+        </ImageBackground>
     </Container>
   );
 }
@@ -330,7 +316,15 @@ export class HomeScreen extends Component {
             {/* Back Side */}
             <View>
               <Card>
-                <CardItem header>
+              <ImageBackground source={this.state.BG == null ? require('./o5.png') : this.state.BG}
+                 style={{
+                   width: "100%",
+                   height: "100%",
+                 }}
+                 imageStyle={{
+                  opacity: 0.4   
+                }}>
+                <CardItem header style={{backgroundColor: 'transparent'}}>
                   <Text>这些幸福，你捕捉到了吗？还没的话，就快去实现吧~</Text>
                 </CardItem>
                 <View style={{height:Content_HEIGHT}}>
@@ -370,7 +364,7 @@ export class HomeScreen extends Component {
                       </Right>
                       <Modal
                         animationType="slide"
-                        transparent={true}
+                        transparent={false}
                         visible={this.state.setVisible === items.name}
                         onRequestClose={() => {
                           this.setState({ setVisible: -1 })
@@ -399,13 +393,21 @@ export class HomeScreen extends Component {
                               */}
                             </Right>
                           </Header>
+                          <ImageBackground source={this.state.BG == null ? require('./o3.jpg') : this.state.BG}
+                             style={{
+                               width: "100%",
+                               height: "100%",
+                             }}
+                             imageStyle={{
+                              opacity: 0.3   
+                            }}>
                           <View style={styles.newDateModal}>
-                            <Text style={{fontSize:20,color: 'gray'}}>
+                            <Text style={{fontSize:20,color: 'black'}}>
                               这件事是否让你感到更加幸福了呢？
                             </Text>
                             <ListItem>
                               <Item floatingLabel>
-                                <Label>事件名称</Label>
+                                <Label style={{color:'black'}}>事件名称</Label>
                                 <Input 
                                   value={this.state._name}
                                   onChangeText={(text) => {this.setState({_name:text})}}
@@ -417,7 +419,7 @@ export class HomeScreen extends Component {
                               <Picker
                                 note
                                 mode="dropdown"
-                                style={{ width: 120 }}
+                                style={{ width: 120,color:'black'}}
                                 selectedValue={this.state._type}
                                 onValueChange={this.onTypeValueChange.bind(this)}
                               >
@@ -432,7 +434,7 @@ export class HomeScreen extends Component {
                               <Picker
                                 note
                                 mode="dropdown"
-                                style={{ width: 120 }}
+                                style={{ width: 120 ,color:'black'}}
                                 selectedValue={this.state._val}
                                 onValueChange={this.onValValueChange.bind(this)}
                               >
@@ -470,7 +472,7 @@ export class HomeScreen extends Component {
                               </Button>
                             </ListItem>
                             <View>
-                              <Button success onPress={()=>{
+                              <Button success style={{justifyContent:'center'}} onPress={()=>{
                                 let i = 0,fix=0;
                                 while(i < this.state.HappyThings[index][2].length){
                                   if(this.state.HappyThings[index][2][i].name===items.name){
@@ -501,6 +503,7 @@ export class HomeScreen extends Component {
                               </Button>
                             </View>
                           </View>
+                          </ImageBackground>
                         </View>
                       </Modal>
                     </CardItem>
@@ -528,7 +531,7 @@ export class HomeScreen extends Component {
                     </Right>
                     <Modal
                       animationType="slide"
-                      transparent={true}
+                      transparent={false}
                       visible={this.state.newVisible === index}
                       onRequestClose={() => {
                         this.setState({ newVisible: -1 })
@@ -552,13 +555,21 @@ export class HomeScreen extends Component {
                           <Right>
                           </Right>
                         </Header>
+                        <ImageBackground source={this.state.BG == null ? require('./o4.jpg') : this.state.BG}
+                           style={{
+                             width: "100%",
+                             height: "100%",
+                           }}
+                           imageStyle={{
+                            opacity: 0.38   
+                          }}>
                         <View style={styles.newDateModal}>
-                          <Text style={{fontSize:20,color: 'gray'}}>
+                          <Text style={{fontSize:20,color: 'black'}}>
                             又发现了幸福的事情吗？记下来！
                           </Text>
                           <ListItem>
                             <Item floatingLabel style={{underlineColor:'transparent'}}>
-                              <Label>事件名称</Label>
+                              <Label style={{color:'black'}}>事件名称</Label>
                               <Input 
                                 value={this.state._name}
                                 onChangeText={(text) => {this.setState({_name:text})}}
@@ -570,7 +581,7 @@ export class HomeScreen extends Component {
                             <Picker
                               note
                               mode="dropdown"
-                              style={{ width: 120 }}
+                              style={{ width: 120,color:'black' }}
                               selectedValue={this.state._type}
                               onValueChange={this.onTypeValueChange.bind(this)}
                             >
@@ -585,7 +596,7 @@ export class HomeScreen extends Component {
                             <Picker
                               note
                               mode="dropdown"
-                              style={{ width: 120 }}
+                              style={{ width: 120,color:'black' }}
                               selectedValue={this.state._val}
                               onValueChange={this.onValValueChange.bind(this)}
                             >
@@ -614,7 +625,7 @@ export class HomeScreen extends Component {
                             </Body>
                           </ListItem>
                           <View>
-                            <Button success onPress={()=>{
+                            <Button success style={{justifyContent:'center'}} onPress={()=>{
                               let i = 0;
                               while(i < this.state.HappyThings[index][2].length){
                                 if(this.state._name===this.state.HappyThings[index][2][i].name){
@@ -674,6 +685,7 @@ export class HomeScreen extends Component {
                             </Button>
                           </View>
                         </View>
+                        </ImageBackground>
                       </View>
                     </Modal>
                   </CardItem>
@@ -683,6 +695,7 @@ export class HomeScreen extends Component {
                     <Icon name='checkmark' />
                   </Button>
                 </CardItem>
+              </ImageBackground>
               </Card>
             </View>
           </FlipCard>
@@ -770,7 +783,7 @@ export class HomeScreen extends Component {
           </Fab>
         <Modal
           animationType="slide"
-          transparent={true}
+          transparent={false}
           visible={this.state.modalVisible}
           onRequestClose={() => {
             this.setState({ modalVisible: !this.state.modalVisible })
@@ -799,8 +812,16 @@ export class HomeScreen extends Component {
                 */}
               </Right>
             </Header>
+            <ImageBackground source={this.state.BG == null ? require('./o5.jpg') : this.state.BG}
+             style={{
+               width: "100%",
+               height: "100%",
+             }}
+             imageStyle={{
+              opacity: 0.38   
+            }}>
             <View style={styles.newDateModal}>
-              <Text style={{fontSize:20,color: 'gray'}}>
+              <Text style={{fontSize:20,color: 'black'}}>
                 记录新的一天让你感到幸福的事情吧~
               </Text>
               <ListItem>
@@ -829,7 +850,7 @@ export class HomeScreen extends Component {
                 </Body>
               </ListItem>
               <View>
-                <Button success onPress={()=>{
+                <Button success style={{justifyContent:'center'}} onPress={()=>{
                   let i = 0;
                   while(i < this.state.HappyThings.length){
                     if(this.dateEqual(this.state.chosenDate,this.state.HappyThings[i][0])){
@@ -865,6 +886,7 @@ export class HomeScreen extends Component {
                 </Button>
               </View>
             </View>
+            </ImageBackground>
           </View>
         </Modal>
       </Container>
@@ -872,10 +894,12 @@ export class HomeScreen extends Component {
   }
 }
 const styles = StyleSheet.create({
-  checkList: {},
+  checkList: {
+    backgroundColor:'transparent',
+  },
   newDateModal: {
     padding: 20,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     height: SLIDER_HEIGHT - 20,
   },
   carouselContainer: {
@@ -899,6 +923,7 @@ const styles = StyleSheet.create({
   itemButtom: {
     alignItems: 'flex-end',
     justifyContent: 'center',
+    backgroundColor: 'transparent',
     height: 50,
   },
   counter: {
