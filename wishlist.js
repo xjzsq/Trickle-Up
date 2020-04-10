@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   CheckBox,
   AsyncStorage,
+  ImageBackground,
 } from 'react-native';
 import {
   Container,
@@ -88,6 +89,7 @@ export default class wishlist extends Component {
         // },
       ],
     };
+
     if (tempCnt)
       tempCnt.then(val => {
         if (val) this.state.totalItem = parseInt(val);
@@ -131,7 +133,7 @@ export default class wishlist extends Component {
                       />
                       <Body>
                         <Text>{this.state.data[index].name}</Text>
-                        <Text note>￥{this.state.data[index].price}</Text>
+                        <Text note>{this.state.data[index].price}</Text>
                       </Body>
                     </Left>
                     <Right>
@@ -212,13 +214,16 @@ export default class wishlist extends Component {
               height: Dimensions.get('window').height * 0.5,
               alignContent: 'center',
               padding: 30,
+              elevation: 1.5,
+              shadowOffset: {width: 0, height: 0},
+              shadowOpacity: 1,
+              shadowRadius: 1.5,
             }}>
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  
                   <Item floatingLabel>
-                    <Label>Name</Label>
+                    <Label>想买点啥呢</Label>
                     <Input
                       onChangeText={text => {
                         this.setState({
@@ -232,7 +237,7 @@ export default class wishlist extends Component {
                     />
                   </Item>
                   <Item floatingLabel last style={{padding: 5}}>
-                    <Label>Price</Label>
+                    <Label>比较一下优缺点吧</Label>
                     <Input
                       onChangeText={text => {
                         this.setState({
@@ -246,34 +251,34 @@ export default class wishlist extends Component {
                     />
                   </Item>
                   <View style={styles.row}>
-                  <Button
-                    style={{padding: 25, flex: 0.75}}
-                    onPress={() => {
-                      ImagePicker.openPicker({
-                        width: 50,
-                        height: 50,
-                        cropping: true,
-                        includeBase64: true,
-                        includeExif: true,
-                      }).then(image => {
-                        this.setState({
-                          modalTemp: {
-                            name: this.state.modalTemp.name,
-                            price: this.state.modalTemp.price,
-                            imgSource: {
-                              uri: `data:${image.mime};base64,` + image.data,
-                              width: image.width,
-                              height: image.height,
+                    <Button
+                      style={{padding: 25, flex: 0.75}}
+                      onPress={() => {
+                        ImagePicker.openPicker({
+                          width: 50,
+                          height: 50,
+                          cropping: true,
+                          includeBase64: true,
+                          includeExif: true,
+                        }).then(image => {
+                          this.setState({
+                            modalTemp: {
+                              name: this.state.modalTemp.name,
+                              price: this.state.modalTemp.price,
+                              imgSource: {
+                                uri: `data:${image.mime};base64,` + image.data,
+                                width: image.width,
+                                height: image.height,
+                              },
                             },
-                          },
+                          });
                         });
-                      });
-                    }}>
-                    <Text>选择图片</Text>
-                  </Button>
-                  <Item style={styles.row}>
-                    <Image source={this.state.modalTemp.imgSource} />
-                  </Item>
+                      }}>
+                      <Text>选择图片</Text>
+                    </Button>
+                    <Item style={styles.row}>
+                      <Image source={this.state.modalTemp.imgSource} />
+                    </Item>
                   </View>
 
                   <View style={styles.row}>
