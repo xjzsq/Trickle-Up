@@ -168,6 +168,7 @@ export default class setting extends Component {
                         <Button large info style={{height:20,borderColor:'transparent'}}
                         bordered onPress={()=>{
                         	//删除函数
+                          this.
                         }}>
                           <Icon name="close" />
                         </Button>
