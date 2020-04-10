@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
 import {
     Container,
     Text,
@@ -44,30 +44,40 @@ export default class setting extends Component {
     constructor(props) {
         super(props);
         this.state = {
-        	_name : '',
-        	_default : '',
-        	nowBack : false,
-        	typeModalVisible : false,
-        	Type: [],
-        	defaultList:[],
+            _name: '',
+            _default: '',
+            nowBack: false,
+            typeModalVisible: false,
+            Type: [],
+            defaultList: [],
         }
         Storage.getStorage('Type').then((x) => {
-          if (x !== null) this.setState({ Type: JSON.parse(x) });
+            if (x !== null) this.setState({ Type: JSON.parse(x) });
         });
 
         Storage.getStorage('defaultList').then((x) => {
-           if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+        });
+    }
+    componentDidMount() {
+        this.listener = DeviceEventEmitter.addListener('updateDefaultData', () => {
+            Storage.getStorage('defaultList').then((x) => {
+                this.setState({ defaultList: JSON.parse(x) });
+            });
         });
     }
     componentWillMount() {
+
         Storage.getStorage('Type').then((x) => {
-           if (x !== null) this.setState({ Type: JSON.parse(x) });
+            if (x !== null) this.setState({ Type: JSON.parse(x) });
         });
 
         Storage.getStorage('defaultList').then((x) => {
-           if (x !== null) this.setState({ defaultList: JSON.parse(x) });
+            if (x !== null) this.setState({ defaultList: JSON.parse(x) });
         });
+        this.listener.remove();
     }
+
     render() {
         const { navigation } = this.props;
         return (
@@ -88,7 +98,7 @@ export default class setting extends Component {
           <Right/>
         </Header>
         <View>
-        	<ScrollView>
+          <ScrollView>
           <FlipCard 
             style={styles.card}
             friction={6}
@@ -167,8 +177,11 @@ export default class setting extends Component {
                       <Right>
                         <Button large info style={{height:20,borderColor:'transparent'}}
                         bordered onPress={()=>{
-                        	//删除函数
-                          this.
+                          //删除函数
+                          delete this.state.Type[obj];
+                          this.setState({Type:this.state.Type});
+                          Storage.setStorage('Type',JSON.stringify(this.state.Type));
+                          DeviceEventEmitter.emit('updateTypeData');
                         }}>
                           <Icon name="close" />
                         </Button>
@@ -192,14 +205,14 @@ export default class setting extends Component {
                     </Right>
                     <Modal
                       isVisible={this.state.typeModalVisible}
-						          onBackdropPress={()=>{this.setState({typeModalVisible:!this.state.typeModalVisible})}}
-						          backdropOpacity={0.0}
-						          style={{
-						            width: Dimensions.get('window').width ,
-						            height: Dimensions.get('window').height * 0.5,
-						            alignContent: 'center',
-						            padding: 30,
-						          }}
+                      onBackdropPress={()=>{this.setState({typeModalVisible:!this.state.typeModalVisible})}}
+                      backdropOpacity={0.0}
+                      style={{
+                        width: Dimensions.get('window').width ,
+                        height: Dimensions.get('window').height * 0.5,
+                        alignContent: 'center',
+                        padding: 30,
+                      }}
                     >
                       <View>
                         <Header style={{ backgroundColor: '#00bfff' }}
@@ -245,10 +258,10 @@ export default class setting extends Component {
                           <View>
                             <Button success onPress={()=>{
                               for(let i = 0; i < this.state.Type.length; i++){
-                              	if(this.state._name===this.state.Type[i].name){
-                              		alert("名称重复，已经有这个种类了...");
+                                if(this.state._name===this.state.Type[i].name){
+                                  alert("名称重复，已经有这个种类了...");
                                   return;
-                              	}
+                                }
                               }
                               if(this.state._name===''){
                                 alert("总能找到这个分类的名字吧~");
@@ -264,6 +277,7 @@ export default class setting extends Component {
                               this.setState({Type:this.state.Type});
                               Storage.setStorage('Type', JSON.stringify(this.state.Type)).then(()=>{
                                 this.setState({typeModalVisible:!this.state.typeModalVisible});
+                                DeviceEventEmitter.emit('updateTypeData');
                               }
                               );
                             }}>
@@ -294,7 +308,7 @@ const styles = StyleSheet.create({
     checkList: {},
     newDateModal: {
         padding: 20,
-        backgroundColor: 'white', 
+        backgroundColor: 'white',
     },
     carouselContainer: {
         marginTop: 10

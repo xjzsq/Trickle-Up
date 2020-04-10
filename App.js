@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, DatePickerAndroid } from 'react-native';
+import { Image, Dimensions, StyleSheet, TouchableOpacity, ScrollView, Modal, DatePickerAndroid, DeviceEventEmitter } from 'react-native';
 import {
     Container,
     Text,
@@ -38,7 +38,7 @@ import RNShakeEvent from 'react-native-shake-event';
 import wishlist from './wishlist.js';
 import setting from './setting.js';
 import Storage from './storage.js'
-import {captureRef} from "react-native-view-shot";
+import { captureRef } from "react-native-view-shot";
 import Share from 'react-native-share';
 
 /* about screen */
@@ -312,19 +312,33 @@ export class HomeScreen extends Component {
         Storage.getStorage('Type').then((x) => {
             if (x !== null) this.setState({ Type: JSON.parse(x) });
             else {
-              Storage.setStorage('Type',JSON.stringify(this.state.Type));
-              Storage.getStorage('Type').then((x) => {console.log(x);});
+                Storage.setStorage('Type', JSON.stringify(this.state.Type));
+                Storage.getStorage('Type').then((x) => { console.log(x); });
             }
         });
         Storage.getStorage('defaultList').then((x) => {
             if (x !== null) this.setState({ defaultList: JSON.parse(x) });
-            else{
-              Storage.setStorage('defaultList',JSON.stringify(this.state.defaultList));
+            else {
+                Storage.setStorage('defaultList', JSON.stringify(this.state.defaultList));
+                DeviceEventEmitter.emit('updateDefaultData');
             }
+        });
+    }
+    componentDidMount() {
+        this.typelistener = DeviceEventEmitter.addListener('updateTypeData', () => {
+            Storage.getStorage('Type').then((x) => {
+                this.setState({ Type: JSON.parse(x) });
+            });
+        });
+        this.defaultlistener = DeviceEventEmitter.addListener('updatedefaultData', () => {
+            Storage.getStorage('defaultList').then((x) => {
+                this.setState({ defaultList: JSON.parse(x) });
+            });
         });
     }
     componentWillMount() {
         this.updateTotHappy();
+        this.typelistener.remove();
     }
     updateTotHappy() {
         let tot = 0;
@@ -350,7 +364,7 @@ export class HomeScreen extends Component {
             <Text>
         {newDate.getFullYear()}/{newDate.getMonth()+1}/{newDate.getDate()}
       </Text>
-    
+
         );
     }
     onTypeValueChange(value: string) {
@@ -366,7 +380,7 @@ export class HomeScreen extends Component {
     _renderItem({ item, index }) {
         let tot = 0;
         return (
-        <View ref = "source">
+            <View ref = "source">
         <ScrollView>
           <FlipCard 
             style={styles.card}
@@ -767,6 +781,7 @@ export class HomeScreen extends Component {
                                 });
                                 this.setState({defaultList:this.state.defaultList});
                                 Storage.setStorage('defaultList',JSON.stringify(this.state.defaultList));
+                                DeviceEventEmitter.emit('updateDefaultData');
                               }
                               item[2].push(
                               {
