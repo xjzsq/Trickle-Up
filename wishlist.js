@@ -143,7 +143,9 @@ export default class wishlist extends Component {
     const {navigation} = this.props;
 
     return (
+      
       <Container>
+        
         <Header
           style={{backgroundColor: '#00bfff'}}
           androidStatusBarColor="#00bfff"
@@ -181,13 +183,11 @@ export default class wishlist extends Component {
         <ImageBackground source={this.state.BG == null ? require('./o2.jpg') : this.state.BG} style={{
           height: "100%",
           width: "100%",
-          marginBottom: 10,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "white",
-          opacity: 0.4
+          backgroundColor: "white",      
         }} />
-        <View style={{flex: 1 , width: "100%"}}>
+        <View style={{flex: 1 , width: "100%", zIndex: 1}}>
           <DraggableFlatList
             activationDistance={15}
             data={this.state.data}
