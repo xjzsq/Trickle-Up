@@ -63,8 +63,6 @@ const getStorage = async key => {
 export default class wishlist extends Component {
   constructor(props) {
     super(props);
-    const tempCnt = getStorage('totalItem');
-    const tempData = getStorage('wishItem');
     this.state = {
       isModalVisible: false,
       totalItem: 0,
@@ -89,19 +87,10 @@ export default class wishlist extends Component {
         // },
       ],
     };
-
-    if (tempCnt)
-      tempCnt.then(val => {
-        if (val) this.state.totalItem = parseInt(val);
-      });
-    if (tempData) {
-      tempData.then(val => {
-        if (val) {
-          const jsonval = JSON.parse(val);
-          this.setState({data: jsonval});
-        }
-      });
-    }
+    getStorage('wishItem').then((x) =>{
+      if(x!= null) this.setState({data: JSON.parse(x)});
+    });
+    if(this.state.data.length != 0) this.state.totalItem = x.length;
   }
 
   renderItem = ({item, index, drag}) => {
@@ -114,8 +103,8 @@ export default class wishlist extends Component {
               const updd = this.state.data.filter(d => d !== item);
               LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
               this.state.totalItem--;
+              setStorage('wishItem', JSON.stringify(updd));
               this.setState({data: updd});
-              this.saveData();
             }}>
             删除
           </Text>
