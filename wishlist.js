@@ -222,16 +222,14 @@ export default class wishlist extends Component {
               width: Dimensions.get('window').width * 0.8,
               height: Dimensions.get('window').height * 0.5,
               alignContent: 'center',
-              margin: 5,
               elevation: 1.5,
               borderWidth: 1,
               borderStyle: 'solid',
-              borderRadius: 10,
             }}>
             <Container style={{flex: 1}}>
               <Content>
                 <Form>
-                  <Item floatingLabel style={{padding: 5}}>
+                  <Item floatingLabel style={{paddingTop: 25}}>
                     <Label>想要点啥呢</Label>
                     <Input
                       onChangeText={text => {
@@ -245,7 +243,7 @@ export default class wishlist extends Component {
                       }}
                     />
                   </Item>
-                  <Item floatingLabel last style={{padding: 5}}>
+                  <Item floatingLabel style={{paddingTop: 25}}>
                     <Label>比较一下优缺点吧</Label>
                     <Input
                       onChangeText={text => {
@@ -259,9 +257,20 @@ export default class wishlist extends Component {
                       }}
                     />
                   </Item>
-                  <View style={styles.row}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      padding: 25,
+                    }}>
                     <Button
-                      style={{padding: 25, flex: 0.75}}
+                      style={{
+                        padding: 25,
+                        justifyContent: 'space-between',
+                        flex: 1,
+                      }}
                       onPress={() => {
                         ImagePicker.openPicker({
                           width: 50,
@@ -283,14 +292,21 @@ export default class wishlist extends Component {
                           });
                         });
                       }}>
-                      <Text>选择图片</Text>
+                      <Icon name="camera" />
                     </Button>
-                    <Item style={styles.row}>
+                    <Item style={(styles.row, {flex: 4})}>
                       <Image source={this.state.modalTemp.imgSource} />
                     </Item>
                   </View>
 
-                  <View style={styles.row}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flex: 1,
+                      alignItems: 'center',
+                      justifyContent: 'space-around',
+                      padding: 25,
+                    }}>
                     <Button
                       onPress={() => {
                         var moTemp = this.state.modalTemp;
