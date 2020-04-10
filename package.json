@@ -18,6 +18,7 @@
     "react": "16.11.0",
     "react-native": "0.62.0",
     "react-native-action-button": "^2.8.5",
+    "react-native-app-intro": "^1.1.5",
     "react-native-draggable-flatlist": "^2.3.2",
     "react-native-flip-card": "^3.5.5",
     "react-native-gesture-handler": "^1.6.1",
