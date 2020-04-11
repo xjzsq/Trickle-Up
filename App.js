@@ -81,6 +81,30 @@ function AboutScreen({ navigation }) {
   );
 }
 
+function clone(obj) {
+  var c = obj instanceof Array ? [] : {};
+  for (var i in obj)
+    if (obj.hasOwnProperty(i)) {
+      var prop = obj[i];
+      if (typeof prop == 'object') {
+        if (prop instanceof Array) {
+          c[i] = [];
+          for (var j = 0; j < prop.length; j++) {
+            if (typeof prop[j] != 'object') {
+              c[i].push(prop[j]);
+            } else {
+              c[i].push(clone(prop[j]));
+            }
+          }
+        } else {
+          c[i] = clone(prop);
+        }
+      } else {
+        c[i] = prop;
+      }
+    }
+  return c;
+}
 /* 主屏幕卡片 */
 const SLIDER_WIDTH = Dimensions.get('window').width;
 const SLIDER_HEIGHT = Dimensions.get('window').height;
@@ -447,6 +471,7 @@ export class HomeScreen extends Component {
                                 //删除询问 TODO
                                 for(let i = 0; i < this.state.HappyThings[index][2].length; i++){
                                   if(this.state.HappyThings[index][2][i].name===items.name){
+                                    this.state.HappyThings[index][2].splice(i,1);
                                     this.setState({HappyThings:this.state.HappyThings});
                                     //存储数据
                                     Storage.setStorage('HappyThings', JSON.stringify(this.state.HappyThings)).then(
@@ -854,7 +879,7 @@ export class HomeScreen extends Component {
                     list.splice(i,0,[
                       this.state.chosenDate,
                       0,
-                      this.state.defaultList,
+                      clone(this.state.defaultList),
                     ]);
                     this.setState({HappyThings :list});
                   } else {
@@ -883,7 +908,7 @@ export class HomeScreen extends Component {
 }
 const styles = StyleSheet.create({
   checkList: {
-    backgroundColor:'transparent',
+    backgroundColor: 'transparent',
   },
   newDateModal: {
     padding: 20,
