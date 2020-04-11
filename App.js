@@ -77,7 +77,7 @@ function AboutScreen({ navigation }) {
             <Text style={{color:'#00bfff'}}>此外，我们专门设计了幸福小贴士以及一些能让猛男们感到幸福的功能，希望小B同学能够感受到来自二次元满满的幸福。</Text>
             <Text/>
             <Text style={{color:'#00bfff'}}>最后，我们想大声告诉小B同学：</Text>
-            <Text style={{color:'#ED4A6A',fontSize:40}}>难道你不幸福吗？你已经被幸福包围了！</Text>
+            <Text style={{color:'#ED4A6A',fontSize:30}}>难道你不幸福吗？其实，你早已被幸福包围了！</Text>
           </View>
         </ImageBackground>
     </Container>
