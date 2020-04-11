@@ -75,6 +75,9 @@ function AboutScreen({ navigation }) {
             <Text style={{color:'#00bfff'}}>参照GTD任务管理模式和GTB消费体系，我们设计了种草机，希望小B同学在这里可以在买下真正所爱之物的同时，省下钱。</Text>
             <Text style={{color:'#00bfff'}}>我们深知，作为一个能让小B感到幸福的APP，因此我们设计了自认为满溢幸福的UI界面，并将世界上最幸福的女孩——珂朵莉蓝作为主体颜色。</Text>
             <Text style={{color:'#00bfff'}}>此外，我们专门设计了幸福小贴士以及一些能让猛男们感到幸福的功能，希望小B同学能够感受到来自二次元满满的幸福。</Text>
+            <Text/>
+            <Text style={{color:'#00bfff'}}>最后，我们想大声告诉小B同学：</Text>
+            <Text style={{color:'#ED4A6A',fontSize:40}}>难道你不幸福吗？你已经被幸福包围了！</Text>
           </View>
         </ImageBackground>
     </Container>
@@ -746,6 +749,7 @@ export class HomeScreen extends Component {
           </Right>
         </Header>
         <View ref="source" collapsable={false}>
+          
           <Carousel
             ref={(c) => this.carousel = c}
             data={this.state.HappyThings}
@@ -759,6 +763,11 @@ export class HomeScreen extends Component {
             slideInterpolatedStyle={animatedStyles}
             useScrollView={true}
           />
+        </View>
+        <View style={{height:Content_HEIGHT,alignItems:'center',justifyContent:'center'}}>
+          <Text>
+            {this.state.HappyThings.length==0?"点击右下方菜单中的加号，开始记录点滴幸福吧~":''}    
+          </Text>
         </View>
         
         <Fab
