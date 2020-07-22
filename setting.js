@@ -38,7 +38,7 @@ export default class setting extends Component {
       _type: '',
       _val: '',
       BG: {
-        setting_Face: null,//null
+        setting_Face: null,
         setting_Back: null,
       },
       nowBack: false,
