@@ -1,5 +1,5 @@
-import React, {Component, useState} from 'react';
-import {ImageBackground, Switch, StyleSheet} from 'react-native';
+import React, { Component, useState } from 'react';
+import { ImageBackground, Switch, StyleSheet } from 'react-native';
 import {
   Container,
   Text,
@@ -43,15 +43,16 @@ export default class skin extends Component {
   }
   render() {
     let time = this.state;
-    let isEnabled = true;
-    const {navigation} = this.props;
+    let isEnabled = false;
+    let eisEnabled = true;
+    const { navigation } = this.props;
     const toggleSwitch = () => {
       isEnabled = !isEnabled;
     };
     return (
       <Container>
         <Header
-          style={{backgroundColor: '#00bfff'}}
+          style={{ backgroundColor: '#00bfff' }}
           androidStatusBarColor="#00bfff"
           iosBarStyle="light-content">
           <Left>
@@ -67,22 +68,23 @@ export default class skin extends Component {
               transparent
               onPress={() => {
                 setTimeout(() => {
-                  alert('同步失败！\n请检查与服务器的网络连接！');
+                  // alert('同步失败！\n请检查与服务器的网络连接！');
+                  alert("同步成功！\n用户ID:114514");
                 }, 500);
               }}>
-              <Icon name="sync" />
+              <Icon name="cloud" />
             </Button>
           </Right>
         </Header>
         <ImageBackground
-          source={null}
+          source={require('./p1.png')}
           style={{
             width: '100%',
             height: '100%',
           }}
           imageStyle={{
             opacity: 0.3,
-            // backgroundColor: '#DDF3FF',
+            // backgroundColor: '#F0FFFF',
           }}>
           <View>
             <List>
@@ -92,11 +94,29 @@ export default class skin extends Component {
                 </Left>
                 <Right>
                   <Switch
-                    trackColor={{false: '#767577', true: '#81b0ff'}}
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
                     thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
                     ios_backgroundColor="#3e3e3e"
                     onValueChange={toggleSwitch}
                     value={isEnabled}
+                    disabled={true}
+                    style={styles.align}
+                  />
+                </Right>
+              </ListItem>
+              <ListItem style={styles.ListItem}>
+                <Left>
+                  <Text style={styles.itemText}>二次元模式</Text>
+                </Left>
+                <Right>
+                  <Switch
+                    style={{ opacity: 0.5 }}
+                    trackColor={{ false: '#767577', true: '#81b0ff' }}
+                    thumbColor={eisEnabled ? '#f5dd4b' : '#f4f3f4'}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleSwitch}
+                    value={eisEnabled}
+                    disabled={false}
                     style={styles.align}
                   />
                 </Right>
@@ -133,7 +153,7 @@ export default class skin extends Component {
               </ListItem>
 
               <ListItem style={styles.ListItem}>
-              <Left>
+                <Left>
                   <Text style={styles.itemText}>主题色 </Text>
                 </Left>
                 <Right>

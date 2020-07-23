@@ -1,19 +1,9 @@
 import React, { Component, Dimensions } from 'react';
-import { ImageBackground } from 'react-native';
+import { Image } from 'react-native';
 import {
-  Container,
-  Text,
-  View,
-  Header,
-  Title,
-  ListItem,
-  List,
-  Button,
-  Left,
-  Right,
-  Body,
-  Icon,
+  View, Title, Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right
 } from 'native-base';
+import { ImageBackground } from 'react-native';
 // const SLIDER_HEIGHT = Dimensions.get('window').height - 250; 
 const SLIDER_HEIGHT = 500;
 export default class community extends Component {
@@ -61,14 +51,109 @@ export default class community extends Component {
           </Body>
           <Right />
         </Header>
-        <View style={{
+        <Content>
+          <Card>
+            <CardItem>
+              <Left>
+                <Thumbnail source={require('./o1.jpg')} />
+                <Body>
+                  <Text>Trickle-Up 开发组</Text>
+                  <Text note>分享自 自定义主题</Text>
+                </Body>
+              </Left>
+            </CardItem>
+            <CardItem cardBody>
+              <Image source={require('./ff.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+            </CardItem>
+            <CardItem>
+              <Left>
+                <Button transparent>
+                  <Icon active name="thumbs-up" />
+                  <Text>12 喜欢</Text>
+                </Button>
+              </Left>
+              <Body>
+                <Button transparent>
+                  <Icon active name="chatbubbles" />
+                  <Text>4 评论</Text>
+                </Button>
+              </Body>
+              <Right>
+                <Text>11小时前</Text>
+              </Right>
+            </CardItem>
+          </Card>
+          <Card>
+            <CardItem>
+              <Left>
+                <Thumbnail source={require('./o1.jpg')} />
+                <Body>
+                  <Text>Trickle-Up 开发组</Text>
+                  <Text note>分享自 愿望单</Text>
+                </Body>
+              </Left>
+            </CardItem>
+            <CardItem cardBody>
+              <Image source={require('./ss.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+            </CardItem>
+            <CardItem>
+              <Left>
+                <Button transparent>
+                  <Icon active name="thumbs-up" />
+                  <Text>12 喜欢</Text>
+                </Button>
+              </Left>
+              <Body>
+                <Button transparent>
+                  <Icon active name="chatbubbles" />
+                  <Text>4 评论</Text>
+                </Button>
+              </Body>
+              <Right>
+                <Text>11小时前</Text>
+              </Right>
+            </CardItem>
+          </Card>
+          <Card>
+            <CardItem>
+              <Left>
+                <Thumbnail source={require('./o1.jpg')} />
+                <Body>
+                  <Text>Admin</Text>
+                  <Text note>咕咕咕</Text>
+                </Body>
+              </Left>
+            </CardItem>
+            <CardItem cardBody>
+              <Image source={require('./o1.jpg')} style={{ height: 200, width: null, flex: 1 }} />
+            </CardItem>
+            <CardItem>
+              <Left>
+                <Button transparent>
+                  <Icon active name="thumbs-up" />
+                  <Text>12 喜欢</Text>
+                </Button>
+              </Left>
+              <Body>
+                <Button transparent>
+                  <Icon active name="chatbubbles" />
+                  <Text>4 评论</Text>
+                </Button>
+              </Body>
+              <Right>
+                <Text>11小时前</Text>
+              </Right>
+            </CardItem>
+          </Card>
+        </Content>
+        {/* <View style={{
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: 'transparent',
           height: SLIDER_HEIGHT,
         }}>
           <Text>{this.state.link}</Text>
-        </View>
+        </View> */}
       </Container>
     );
   }

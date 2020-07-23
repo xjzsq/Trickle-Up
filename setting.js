@@ -105,10 +105,11 @@ export default class setting extends Component {
               transparent
               onPress={() => {
                 setTimeout(() => {
-                  alert("同步失败！\n请检查与服务器的网络连接！");
+                  // alert("同步失败！\n请检查与服务器的网络连接！");
+                  alert("同步成功！\n用户ID:114514");
                 }, 500);
               }}>
-              <Icon name="sync" />
+              <Icon name="cloud" />
             </Button>
           </Right>
         </Header>
